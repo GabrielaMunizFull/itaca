@@ -13,9 +13,9 @@ Quando invocado:
 2. Verifique se cores, espaçamentos e tipografia usados batem com os tokens
    definidos no projeto
 3. Verifique contraste mínimo (WCAG AA), tamanho de área clicável, e uso de
-   elementos semânticos HTML
-4. Verifique responsividade básica (uso de classes/breakpoints do sistema,
-   não valores fixos arbitrários)
+   `accessibilityLabel`/`accessibilityRole` nos componentes
+4. Verifique responsividade básica (uso de `Dimensions`/`useWindowDimensions`
+   e tokens de tema, não valores de tamanho hardcoded arbitrários)
 5. Liste inconsistências encontradas com o arquivo e a linha
 
 Formato de saída:
