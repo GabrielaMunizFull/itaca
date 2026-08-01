@@ -32,6 +32,15 @@ export function SirenIcon({ color, size = 21 }: IconProps) {
   );
 }
 
+export function CyclopsIcon({ color, size = 21 }: IconProps) {
+  return (
+    <Svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke={color} strokeWidth={1.5}>
+      <Circle cx={12} cy={12} r={7} />
+      <Circle cx={12} cy={12} r={2.2} fill={color} stroke="none" />
+    </Svg>
+  );
+}
+
 export function GearIcon({ color, size = 17 }: IconProps) {
   return (
     <Svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke={color} strokeWidth={1.6}>

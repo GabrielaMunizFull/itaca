@@ -1,8 +1,9 @@
 /**
  * MainTabs — Ãtaca App
  *
- * Bottom tabs do MVP: apenas "Início" e "Sereia" (escopo reduzido do
- * protótipo, que tem 5 abas). Ícones lineares em `react-native-svg`, cor
+ * Bottom tabs do MVP: "Início", "Sereia" e "Ciclope" (escopo reduzido do
+ * protótipo, que tem 5 abas — faltam Penélope e Divina). Ícones lineares em
+ * `react-native-svg`, cor
  * ativa `colors.primary`, inativa `colors.textTertiary`. `SaveFab` e
  * `TabWipeOverlay` (transição "rasgo de papiro" entre abas, equivalente a
  * `navWipe` de `Itaca App.dc.html`) são renderizados aqui, uma única vez,
@@ -13,9 +14,10 @@ import React, { useEffect, useRef } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { HomeIcon, SirenIcon } from '../components/icons';
+import { CyclopsIcon, HomeIcon, SirenIcon } from '../components/icons';
 import { SaveFab } from '../components/SaveFab';
 import { TabWipeOverlay, type TabWipeOverlayHandle } from '../components/TabWipeOverlay';
+import { CyclopsScreen } from '../screens/CyclopsScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { SirenScreen } from '../screens/SirenScreen';
 import { colors, spacing, typography } from '../theme/tokens';
@@ -102,6 +104,15 @@ export function MainTabs() {
             tabBarLabel: 'Sereia',
             tabBarAccessibilityLabel: 'Sereia',
             tabBarIcon: ({ color }) => <SirenIcon color={color} />,
+          }}
+        />
+        <Tab.Screen
+          name="Cyclops"
+          component={CyclopsScreen}
+          options={{
+            tabBarLabel: 'Ciclope',
+            tabBarAccessibilityLabel: 'Ciclope',
+            tabBarIcon: ({ color }) => <CyclopsIcon color={color} />,
           }}
         />
       </Tab.Navigator>

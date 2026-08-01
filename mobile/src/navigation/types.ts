@@ -11,4 +11,5 @@ export type RootStackParamList = {
 export type MainTabsParamList = {
   Home: undefined;
   Siren: undefined;
+  Cyclops: undefined;
 };

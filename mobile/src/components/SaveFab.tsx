@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
     right: spacing.base,
+    width: 240,
     alignItems: 'flex-end',
   },
   button: {

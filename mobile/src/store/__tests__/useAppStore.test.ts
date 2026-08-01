@@ -46,6 +46,40 @@ describe('useAppStore', () => {
     });
   });
 
+  describe('pickCreature', () => {
+    it('seta a criatura selecionada', () => {
+      useAppStore.getState().pickCreature('cila');
+      expect(useAppStore.getState().selectedCreature).toBe('cila');
+      useAppStore.getState().pickCreature('polifemo');
+      expect(useAppStore.getState().selectedCreature).toBe('polifemo');
+    });
+  });
+
+  describe('addScanToHistory', () => {
+    it('insere no início do histórico', () => {
+      useAppStore.getState().addScanToHistory({ name: 'Polifemo', threat: 'ALTA', time: '12:00' });
+      useAppStore.getState().addScanToHistory({ name: 'Cila', threat: 'CRÍTICA', time: '12:01' });
+      const history = useAppStore.getState().scanHistory;
+      expect(history[0].name).toBe('Cila');
+      expect(history[1].name).toBe('Polifemo');
+    });
+
+    it('scanHistory nunca passa de 3 itens', () => {
+      for (let i = 0; i < 5; i += 1) {
+        useAppStore.getState().addScanToHistory({ name: 'Polifemo', threat: 'ALTA', time: '12:00' });
+      }
+      expect(useAppStore.getState().scanHistory.length).toBe(3);
+    });
+
+    it('cada item do scanHistory tem id único', () => {
+      for (let i = 0; i < 3; i += 1) {
+        useAppStore.getState().addScanToHistory({ name: 'Polifemo', threat: 'ALTA', time: '12:00' });
+      }
+      const ids = useAppStore.getState().scanHistory.map((entry) => entry.id);
+      expect(new Set(ids).size).toBe(ids.length);
+    });
+  });
+
   describe('completeOnboarding', () => {
     it('marca onboarded e salva nome/navio/arquétipo', () => {
       useAppStore.getState().completeOnboarding('Aquiles', 'Pequod', 'arqueiro');

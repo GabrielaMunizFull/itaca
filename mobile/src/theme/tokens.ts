@@ -89,6 +89,9 @@ export const colors = {
   // Fundo interno do SVG do mapa de perigo (rect de dentro do card acima).
   dangerMapInner: '#123038',
 
+  // Fundo do viewfinder do Scanner de Ciclope (tela Ciclope).
+  viewfinderBg: '#0c1f24',
+
   // Bordas sutis `rgba(46,36,24, X)` repetidas no protótipo — apenas os
   // alphas exatamente documentados viram token; demais permanecem literais.
   borderSubtle: 'rgba(46,36,24,.08)',
