@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg, { Circle, Path, Rect } from 'react-native-svg';
 
 interface IconProps {
   color: string;
@@ -73,6 +73,33 @@ export function AnchorIcon({ color, size = 24 }: IconProps) {
     <Svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke={color} strokeWidth={1.6}>
       <Circle cx={12} cy={5} r={2} />
       <Path d="M12 7v13M7 12H3a9 9 0 0 0 9 9 9 9 0 0 0 9-9h-4" strokeLinecap="round" />
+    </Svg>
+  );
+}
+
+export function ShieldIcon({ color, size = 24 }: IconProps) {
+  return (
+    <Svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke={color} strokeWidth={1.6}>
+      <Path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z" />
+    </Svg>
+  );
+}
+
+export function QuestionIcon({ color, size = 24 }: IconProps) {
+  return (
+    <Svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke={color} strokeWidth={1.6}>
+      <Circle cx={12} cy={12} r={9} />
+      <Path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7" />
+      <Circle cx={12} cy={17} r={0.3} fill={color} stroke="none" />
+    </Svg>
+  );
+}
+
+export function PenelopeIcon({ color, size = 21 }: IconProps) {
+  return (
+    <Svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke={color} strokeWidth={1.5}>
+      <Rect x={5} y={4} width={14} height={16} rx={1.5} />
+      <Path d="M8 9h8M8 12.5h8M8 16h5" />
     </Svg>
   );
 }

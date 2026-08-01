@@ -114,6 +114,62 @@ describe('useAppStore', () => {
     });
   });
 
+  describe('sendSignal', () => {
+    it('insere um novo post no topo com texto/reactions esperados', () => {
+      const before = useAppStore.getState().posts;
+      const lastDay = before[0].day;
+
+      useAppStore.getState().sendSignal();
+
+      const posts = useAppStore.getState().posts;
+      expect(posts.length).toBe(before.length + 1);
+      expect(posts[0].text).toBe(
+        'Sinal manual: ainda vivo, ainda voltando. (enviado por vontade própria, raro)'
+      );
+      expect(posts[0].reactions).toEqual({ anchor: 0, shield: 0, question: 0 });
+      expect(posts[0].day).toBeGreaterThan(lastDay);
+      expect(posts[0].day).toBeLessThanOrEqual(lastDay + 5);
+      expect(posts[0].likes).toBeGreaterThanOrEqual(40);
+      expect(posts[0].likes).toBeLessThan(130);
+    });
+
+    it('cada post enviado tem id único', () => {
+      useAppStore.getState().sendSignal();
+      useAppStore.getState().sendSignal();
+      const ids = useAppStore.getState().posts.map((p) => p.id);
+      expect(new Set(ids).size).toBe(ids.length);
+    });
+  });
+
+  describe('addReaction', () => {
+    it('incrementa a reação do post correto sem afetar os demais', () => {
+      const target = useAppStore.getState().posts[1];
+      const other = useAppStore.getState().posts[0];
+
+      useAppStore.getState().addReaction(target.id, 'shield');
+
+      const posts = useAppStore.getState().posts;
+      const updatedTarget = posts.find((p) => p.id === target.id)!;
+      const updatedOther = posts.find((p) => p.id === other.id)!;
+
+      expect(updatedTarget.reactions.shield).toBe(target.reactions.shield + 1);
+      expect(updatedOther.reactions).toEqual(other.reactions);
+    });
+
+    it('incrementa tipos diferentes de reação de forma independente', () => {
+      const target = useAppStore.getState().posts[0];
+
+      useAppStore.getState().addReaction(target.id, 'anchor');
+      useAppStore.getState().addReaction(target.id, 'question');
+      useAppStore.getState().addReaction(target.id, 'question');
+
+      const updated = useAppStore.getState().posts.find((p) => p.id === target.id)!;
+      expect(updated.reactions.anchor).toBe(target.reactions.anchor + 1);
+      expect(updated.reactions.question).toBe(target.reactions.question + 2);
+      expect(updated.reactions.shield).toBe(target.reactions.shield);
+    });
+  });
+
   describe('hasHydrated', () => {
     it('fica true mesmo se onRehydrateStorage receber um erro simulado', () => {
       useAppStore.setState({ hasHydrated: false });

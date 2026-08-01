@@ -1,8 +1,8 @@
 /**
  * MainTabs — Ãtaca App
  *
- * Bottom tabs do MVP: "Início", "Sereia" e "Ciclope" (escopo reduzido do
- * protótipo, que tem 5 abas — faltam Penélope e Divina). Ícones lineares em
+ * Bottom tabs do MVP: "Início", "Sereia", "Ciclope" e "Penélope" (escopo
+ * reduzido do protótipo, que tem 5 abas — falta Divina). Ícones lineares em
  * `react-native-svg`, cor
  * ativa `colors.primary`, inativa `colors.textTertiary`. `SaveFab` e
  * `TabWipeOverlay` (transição "rasgo de papiro" entre abas, equivalente a
@@ -14,11 +14,12 @@ import React, { useEffect, useRef } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { CyclopsIcon, HomeIcon, SirenIcon } from '../components/icons';
+import { CyclopsIcon, HomeIcon, PenelopeIcon, SirenIcon } from '../components/icons';
 import { SaveFab } from '../components/SaveFab';
 import { TabWipeOverlay, type TabWipeOverlayHandle } from '../components/TabWipeOverlay';
 import { CyclopsScreen } from '../screens/CyclopsScreen';
 import { HomeScreen } from '../screens/HomeScreen';
+import { PenelopeScreen } from '../screens/PenelopeScreen';
 import { SirenScreen } from '../screens/SirenScreen';
 import { colors, spacing, typography } from '../theme/tokens';
 import type { MainTabsParamList } from './types';
@@ -113,6 +114,15 @@ export function MainTabs() {
             tabBarLabel: 'Ciclope',
             tabBarAccessibilityLabel: 'Ciclope',
             tabBarIcon: ({ color }) => <CyclopsIcon color={color} />,
+          }}
+        />
+        <Tab.Screen
+          name="Penelope"
+          component={PenelopeScreen}
+          options={{
+            tabBarLabel: 'Penélope',
+            tabBarAccessibilityLabel: 'Penélope',
+            tabBarIcon: ({ color }) => <PenelopeIcon color={color} />,
           }}
         />
       </Tab.Navigator>
