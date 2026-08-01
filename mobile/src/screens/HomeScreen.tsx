@@ -2,22 +2,29 @@
  * HomeScreen — Ãtaca App
  *
  * Visão geral da jornada: ETA duplo, clima, rota atual e próximos desvios.
- * Textos e valores copiados 1:1 de `Itaca App.dc.html`. Sino/notificações e
- * ações reais de "iniciar navegação"/"histórico" ficam fora do escopo MVP.
+ * Textos e valores copiados 1:1 de `Itaca App.dc.html`. Dropdown de
+ * notificações é estado local (não vai pro `useAppStore`).
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import type { CompositeNavigationProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { GearIcon, SunIcon } from '../components/icons';
+import { BellIcon, GearIcon, SunIcon } from '../components/icons';
 import { RouteMapSvg } from '../components/RouteMapSvg';
 import type { MainTabsParamList, RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
-import { colors, radius, spacing, typography } from '../theme/tokens';
+import { colors, radius, shadows, spacing, typography } from '../theme/tokens';
+
+// Copiadas 1:1 do array `NOTIFICATIONS` em `Itaca App.dc.html`.
+const NOTIFICATIONS = [
+  'Nova zona de perigo detectada a 40m da rota.',
+  'Penélope reagiu ao seu último sinal de vida.',
+  'Zeus mencionou seu nome em vão (de novo).',
+];
 
 type HomeScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<MainTabsParamList, 'Home'>,
@@ -43,6 +50,13 @@ export function HomeScreen() {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const heroName = useAppStore((s) => s.heroName);
   const insets = useSafeAreaInsets();
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifSeen, setNotifSeen] = useState(false);
+
+  const toggleNotif = () => {
+    setNotifOpen((open) => !open);
+    setNotifSeen(true);
+  };
 
   return (
     <ScrollView
@@ -57,15 +71,44 @@ export function HomeScreen() {
           <Text style={styles.welcome}>BEM-VINDO DE VOLTA,</Text>
           <Text style={styles.heroName}>{heroName}</Text>
         </View>
-        <TouchableOpacity
-          style={styles.iconButton}
-          onPress={() => navigation.navigate('Settings')}
-          accessibilityRole="button"
-          accessibilityLabel="Abrir configurações"
-          hitSlop={8}
-        >
-          <GearIcon color={colors.textSecondary} />
-        </TouchableOpacity>
+        <View style={styles.headerIcons}>
+          <TouchableOpacity
+            style={styles.iconButton}
+            onPress={toggleNotif}
+            accessibilityRole="button"
+            accessibilityLabel={
+              notifSeen ? 'Notificações' : `Notificações, ${NOTIFICATIONS.length} novas`
+            }
+            accessibilityState={{ expanded: notifOpen }}
+            hitSlop={8}
+          >
+            <BellIcon color={colors.textSecondary} />
+            {!notifSeen && (
+              <View style={styles.notifBadge} importantForAccessibility="no-hide-descendants">
+                <Text style={styles.notifBadgeText}>{NOTIFICATIONS.length}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.iconButton}
+            onPress={() => navigation.navigate('Settings')}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir configurações"
+            hitSlop={8}
+          >
+            <GearIcon color={colors.textSecondary} />
+          </TouchableOpacity>
+
+          {notifOpen && (
+            <View style={styles.notifDropdown}>
+              {NOTIFICATIONS.map((text) => (
+                <Text key={text} style={styles.notifItem}>
+                  {text}
+                </Text>
+              ))}
+            </View>
+          )}
+        </View>
       </View>
 
       <View style={styles.etaRow}>
@@ -110,10 +153,25 @@ export function HomeScreen() {
         ))}
       </View>
 
-      <TouchableOpacity style={styles.primaryButton} activeOpacity={0.85}>
+      <TouchableOpacity
+        style={styles.primaryButton}
+        activeOpacity={0.85}
+        onPress={() =>
+          Alert.alert(
+            'Rota ainda não existe',
+            'Essa jornada começa quando o resto do app for construído. Volte em uns 9 anos.'
+          )
+        }
+      >
         <Text style={styles.primaryButtonText}>INICIAR NAVEGAÇÃO</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.secondaryButton} activeOpacity={0.85}>
+      <TouchableOpacity
+        style={styles.secondaryButton}
+        activeOpacity={0.85}
+        onPress={() =>
+          Alert.alert('Histórico indisponível', 'Os 14 desvios existem, só não em lugar nenhum ainda.')
+        }
+      >
         <Text style={styles.secondaryButtonText}>Ver histórico de desvios (14)</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -147,6 +205,11 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     letterSpacing: 2,
   },
+  headerIcons: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    position: 'relative',
+  },
   iconButton: {
     width: 36,
     height: 36,
@@ -154,6 +217,42 @@ const styles = StyleSheet.create({
     backgroundColor: colors.cardBeige,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  notifBadge: {
+    position: 'absolute',
+    top: -2,
+    right: -2,
+    backgroundColor: colors.danger,
+    borderRadius: radius.md - 4,
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+  },
+  notifBadgeText: {
+    fontFamily: 'Inter_700Bold',
+    fontSize: typography.fontSize.micro,
+    color: colors.cardWhite,
+    lineHeight: 12,
+  },
+  notifDropdown: {
+    position: 'absolute',
+    top: 42,
+    right: 0,
+    width: 230,
+    backgroundColor: colors.cardWhite,
+    borderRadius: radius.md,
+    padding: spacing.sm,
+    zIndex: 30,
+    ...shadows.modal,
+  },
+  notifItem: {
+    paddingVertical: 9,
+    paddingHorizontal: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderSubtle,
+    fontFamily: 'Inter_400Regular',
+    fontSize: typography.fontSize.caption,
+    color: colors.textPrimary,
+    lineHeight: 15,
   },
   etaRow: {
     flexDirection: 'row',
@@ -188,7 +287,7 @@ const styles = StyleSheet.create({
   etaCaption: {
     fontFamily: 'Inter_400Regular',
     fontSize: typography.fontSize.microLarge,
-    color: colors.textTertiary,
+    color: colors.textTertiaryAccessible,
     marginTop: 2,
   },
   weatherCard: {
@@ -209,7 +308,7 @@ const styles = StyleSheet.create({
   weatherSubtitle: {
     fontFamily: 'Inter_400Regular',
     fontSize: typography.fontSize.microLarge,
-    color: colors.textTertiary,
+    color: colors.textTertiaryAccessible,
     marginTop: 2,
   },
   routeCard: {
@@ -267,7 +366,7 @@ const styles = StyleSheet.create({
   deviationDescription: {
     fontFamily: 'Inter_400Regular',
     fontSize: typography.fontSize.caption,
-    color: colors.textTertiary,
+    color: colors.textTertiaryAccessible,
     marginTop: 2,
   },
   primaryButton: {

@@ -49,3 +49,21 @@ export function SunIcon({ color, size = 26 }: IconProps) {
     </Svg>
   );
 }
+
+export function BellIcon({ color, size = 17 }: IconProps) {
+  return (
+    <Svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke={color} strokeWidth={1.6}>
+      <Path d="M6 10a6 6 0 0 1 12 0c0 4 1.5 5.5 1.5 5.5h-15S6 14 6 10Z" />
+      <Path d="M10 19a2 2 0 0 0 4 0" />
+    </Svg>
+  );
+}
+
+export function AnchorIcon({ color, size = 24 }: IconProps) {
+  return (
+    <Svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke={color} strokeWidth={1.6}>
+      <Circle cx={12} cy={5} r={2} />
+      <Path d="M12 7v13M7 12H3a9 9 0 0 0 9 9 9 9 0 0 0 9-9h-4" strokeLinecap="round" />
+    </Svg>
+  );
+}

@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
     fontFamily: 'Inter_400Regular',
     fontSize: typography.fontSize.caption,
-    color: colors.textTertiary,
+    color: colors.textTertiaryAccessible,
   },
   input: {
     marginTop: spacing.sm,

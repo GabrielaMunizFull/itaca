@@ -54,7 +54,20 @@ export const colors = {
   // Texto
   textPrimary: '#2E2418', // títulos e corpo de texto principal
   textSecondary: '#5B4C36', // legendas, metadados, texto de apoio
-  textTertiary: '#8a7a63', // placeholders, texto desabilitado/menos importante
+  textTertiary: '#8a7a63', // placeholders, texto desabilitado/menos importante — USO DECORATIVO/DE VOZ apenas (labels, dica do splash, legenda de mapa, texto de botão CTA); NÃO usar para conteúdo informativo que o usuário precisa ler (falha WCAG AA nos fundos abaixo)
+  // Variante mais escura de `textTertiary`, na mesma família marrom/oliva,
+  // criada para atender WCAG AA (>=4.5:1) em TEXTO INFORMATIVO real
+  // (descrições de card, timestamps de lista, legendas de valor) — onde
+  // `textTertiary` falha o contraste mínimo. Usar `textTertiary` continua
+  // correto para elementos decorativos/de voz de marca.
+  //
+  // Contraste (fórmula WCAG, luminância relativa): antes (`textTertiary`
+  // #8a7a63) vs. depois (`textTertiaryAccessible` #675841):
+  //   - vs. colors.background (#EFE2C4): 3.24:1 -> 5.36:1
+  //   - vs. colors.cardBeige  (#E3D3A8): 2.80:1 -> 4.64:1  (pior caso / piso)
+  //   - vs. colors.cardWhite  (#fff8e8): 3.93:1 -> 6.51:1
+  // Todos os 3 fundos passam AA (>=4.5:1) com o novo valor.
+  textTertiaryAccessible: '#675841',
 
   // Status de presença/estado do usuário. Valores hex definidos
   // explicitamente no README (seção Design Tokens > Cores).

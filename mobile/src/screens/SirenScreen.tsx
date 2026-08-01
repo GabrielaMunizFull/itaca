@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   logRowTime: {
     fontFamily: 'Inter_400Regular',
     fontSize: typography.fontSize.caption,
-    color: colors.textTertiary,
+    color: colors.textTertiaryAccessible,
   },
   legal: {
     marginTop: spacing.base,
