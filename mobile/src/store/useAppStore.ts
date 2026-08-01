@@ -4,8 +4,8 @@
  * Espelha o comportamento da classe `Component` do protótipo
  * `Itaca App.dc.html` (métodos `completeOnboarding`, `toggleMast`,
  * `toggleEarplugs`, `registerSiren`, `saveSettings`, `pickCreature`,
- * `runScan`, `sendSignal`, `addReaction`), restrito ao escopo do MVP (sem
- * Divina/dark mode).
+ * `runScan`, `sendSignal`, `addReaction`, `togglePoseidon`, `openSOS`),
+ * restrito ao escopo do MVP (sem dark mode).
  *
  * Persistência: AsyncStorage, equivalente ao `localStorage` (chave
  * `itaca-mvp-state`) do protótipo original.
@@ -30,6 +30,12 @@ export interface ScanHistoryEntry {
   time: string;
 }
 
+export interface SosLogEntry {
+  id: string;
+  time: string;
+  reply: string;
+}
+
 export interface PostReactions {
   anchor: number;
   shield: number;
@@ -48,6 +54,17 @@ export interface Post {
 
 export type ReactionType = keyof PostReactions;
 
+// Respostas irônicas de divindades — copiadas 1:1 de `DEITY_REPLIES` em
+// `Itaca App.dc.html`.
+export const DEITY_REPLIES = [
+  'Zeus: "Estou ocupado. Tente um raio de sorte."',
+  'Atena: "Já enviei uma coruja com instruções. Ela é lenta, mas chega."',
+  'Hermes: "A caminho! Só preciso terminar uma entrega para os mortos."',
+  'Afrodite: "Isso é problema de guerra, não de amor. Fale com o Ares."',
+  'Poseidon: "..." (mensagem não entregue, ele te bloqueou de volta)',
+  'Ares: "Finalmente algo interessante. Já mando um furacão de bônus."',
+] as const;
+
 interface AppState {
   heroName: string;
   shipName: string;
@@ -62,6 +79,8 @@ interface AppState {
   // Intencionalmente sem cap (diferente de sirenLog/scanHistory): o feed de
   // Penélope é o histórico completo da jornada, não um log recente.
   posts: Post[];
+  poseidonMuted: boolean;
+  sosLog: SosLogEntry[];
   // Indica se o estado persistido já terminou de ser reidratado do
   // AsyncStorage. Usado pelo RootNavigator para evitar flash de Onboarding
   // antes da reidratação concluir.
@@ -76,6 +95,8 @@ interface AppState {
   addScanToHistory: (entry: { name: string; threat: string; time: string }) => void;
   sendSignal: () => void;
   addReaction: (postId: string, type: ReactionType) => void;
+  togglePoseidon: () => void;
+  openSOS: () => string;
   setHasHydrated: (v: boolean) => void;
 }
 
@@ -147,6 +168,8 @@ export const useAppStore = create<AppState>()(
       selectedCreature: 'polifemo',
       scanHistory: [],
       posts: INITIAL_POSTS,
+      poseidonMuted: false,
+      sosLog: [],
       hasHydrated: false,
 
       completeOnboarding: (name, ship, archetype) =>
@@ -201,6 +224,16 @@ export const useAppStore = create<AppState>()(
           ),
         })),
 
+      togglePoseidon: () => set((s) => ({ poseidonMuted: !s.poseidonMuted })),
+
+      openSOS: () => {
+        const reply = DEITY_REPLIES[Math.floor(Math.random() * DEITY_REPLIES.length)];
+        set((s) => ({
+          sosLog: prependCapped(s.sosLog, { id: generateLogId(), time: formatTime(new Date()), reply }, 5),
+        }));
+        return reply;
+      },
+
       setHasHydrated: (v) => set({ hasHydrated: v }),
     }),
     {
@@ -219,6 +252,8 @@ export const useAppStore = create<AppState>()(
         selectedCreature: s.selectedCreature,
         scanHistory: s.scanHistory,
         posts: s.posts,
+        poseidonMuted: s.poseidonMuted,
+        sosLog: s.sosLog,
       }),
       onRehydrateStorage: () => (_state, error) => {
         if (error) {

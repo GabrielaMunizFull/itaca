@@ -1,4 +1,4 @@
-import { useAppStore } from '../useAppStore';
+import { DEITY_REPLIES, useAppStore } from '../useAppStore';
 
 const initialState = useAppStore.getState();
 
@@ -167,6 +167,49 @@ describe('useAppStore', () => {
       expect(updated.reactions.anchor).toBe(target.reactions.anchor + 1);
       expect(updated.reactions.question).toBe(target.reactions.question + 2);
       expect(updated.reactions.shield).toBe(target.reactions.shield);
+    });
+  });
+
+  describe('togglePoseidon', () => {
+    it('alterna poseidonMuted', () => {
+      const before = useAppStore.getState().poseidonMuted;
+      useAppStore.getState().togglePoseidon();
+      expect(useAppStore.getState().poseidonMuted).toBe(!before);
+      useAppStore.getState().togglePoseidon();
+      expect(useAppStore.getState().poseidonMuted).toBe(before);
+    });
+  });
+
+  describe('openSOS', () => {
+    it('retorna uma resposta dentro de DEITY_REPLIES e grava no sosLog', () => {
+      const reply = useAppStore.getState().openSOS();
+
+      expect(DEITY_REPLIES).toContain(reply);
+
+      const log = useAppStore.getState().sosLog;
+      expect(log.length).toBe(1);
+      expect(log[0].reply).toBe(reply);
+    });
+
+    it('insere no início do sosLog', () => {
+      useAppStore.getState().openSOS();
+      useAppStore.getState().openSOS();
+      expect(useAppStore.getState().sosLog.length).toBe(2);
+    });
+
+    it('sosLog nunca passa de 5 itens', () => {
+      for (let i = 0; i < 8; i += 1) {
+        useAppStore.getState().openSOS();
+      }
+      expect(useAppStore.getState().sosLog.length).toBe(5);
+    });
+
+    it('cada item do sosLog tem id único', () => {
+      for (let i = 0; i < 5; i += 1) {
+        useAppStore.getState().openSOS();
+      }
+      const ids = useAppStore.getState().sosLog.map((entry) => entry.id);
+      expect(new Set(ids).size).toBe(ids.length);
     });
   });
 

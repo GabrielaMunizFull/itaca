@@ -13,4 +13,5 @@ export type MainTabsParamList = {
   Siren: undefined;
   Cyclops: undefined;
   Penelope: undefined;
+  Divine: undefined;
 };

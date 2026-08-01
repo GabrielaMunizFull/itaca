@@ -103,3 +103,11 @@ export function PenelopeIcon({ color, size = 21 }: IconProps) {
     </Svg>
   );
 }
+
+export function DivineIcon({ color, size = 21 }: IconProps) {
+  return (
+    <Svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke={color} strokeWidth={1.5}>
+      <Path d="M13 2 L4 14 h6 l-1 8 L20 10 h-6 Z" strokeLinejoin="round" />
+    </Svg>
+  );
+}
