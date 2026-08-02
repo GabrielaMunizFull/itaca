@@ -31,7 +31,13 @@
           "imageWidth": 200
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "O Ãtaca usa a câmera para o Scanner de Ciclope — a simulação de detecção de criaturas mitológicas ao seu redor."
+        }
+      ]
     ]
   }
 }

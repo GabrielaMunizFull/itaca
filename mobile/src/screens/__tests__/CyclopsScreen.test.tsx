@@ -1,5 +1,6 @@
 import React from 'react';
 import { act, fireEvent, render } from '@testing-library/react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import { CyclopsScreen } from '../CyclopsScreen';
 import { useAppStore } from '../../store/useAppStore';
 
@@ -9,13 +10,21 @@ beforeEach(() => {
   useAppStore.setState(initialState, true);
 });
 
+function renderScreen() {
+  return render(
+    <NavigationContainer>
+      <CyclopsScreen />
+    </NavigationContainer>
+  );
+}
+
 describe('CyclopsScreen', () => {
   it('renderiza sem lançar erro', () => {
-    expect(() => render(<CyclopsScreen />)).not.toThrow();
+    expect(() => renderScreen()).not.toThrow();
   });
 
   it('troca de chip e atualiza a criatura exibida no badge de confiança', async () => {
-    const { getByLabelText, getByText } = await render(<CyclopsScreen />);
+    const { getByLabelText, getByText } = await renderScreen();
 
     // Polifemo é o alvo inicial (98% confiança).
     expect(getByText('98% confiança')).toBeTruthy();
@@ -31,7 +40,7 @@ describe('CyclopsScreen', () => {
   it('escaneia, exibe o resultado da criatura selecionada e grava no histórico', async () => {
     jest.useFakeTimers();
 
-    const { getByLabelText, getByText } = await render(<CyclopsScreen />);
+    const { getByLabelText, getByText } = await renderScreen();
 
     await act(async () => {
       fireEvent.press(getByLabelText('Caríbdis'));
@@ -53,7 +62,7 @@ describe('CyclopsScreen', () => {
   it('ignora troca de chip durante um scan em andamento', async () => {
     jest.useFakeTimers();
 
-    const { getByLabelText } = await render(<CyclopsScreen />);
+    const { getByLabelText } = await renderScreen();
 
     await act(async () => {
       fireEvent.press(getByLabelText('Escanear criatura'));

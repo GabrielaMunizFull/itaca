@@ -1,15 +1,19 @@
 /**
  * CyclopsScreen — Ãtaca App
  *
- * Scanner de Ciclope: viewfinder simulado, seletor de criatura-alvo, botão
- * de scan (com resultado irônico e histórico) e modal de compartilhamento.
- * Textos e dados copiados 1:1 de `Itaca App.dc.html` (`CREATURES`,
- * `runScan`, `pickCreature`, `openShare`/`closeShare`).
+ * Scanner de Ciclope: câmera real (via `expo-camera`) como fundo ao vivo do
+ * viewfinder quando a permissão é concedida (com fallback ilustrado
+ * enquanto a permissão não foi concedida/negada), seletor de criatura-alvo,
+ * botão de scan (com resultado irônico e histórico — detecção 100% mock) e
+ * compartilhamento nativo via `Share.share`. Textos e dados copiados 1:1 de
+ * `Itaca App.dc.html` (`CREATURES`, `runScan`, `pickCreature`).
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { Alert, Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useIsFocused } from '@react-navigation/native';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { CyclopsViewfinderSvg } from '../components/CyclopsViewfinderSvg';
 import { useAppStore } from '../store/useAppStore';
 import { colors, radius, spacing, typography } from '../theme/tokens';
@@ -75,10 +79,11 @@ export function CyclopsScreen() {
   const scanHistory = useAppStore((s) => s.scanHistory);
   const addScanToHistory = useAppStore((s) => s.addScanToHistory);
   const insets = useSafeAreaInsets();
+  const isFocused = useIsFocused();
 
   const [scanning, setScanning] = useState(false);
   const [scanDone, setScanDone] = useState(false);
-  const [shareOpen, setShareOpen] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
   const scanTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(
@@ -118,6 +123,20 @@ export function CyclopsScreen() {
     Alert.alert('Ninguém', 'Você agora se chama "Ninguém". Funciona surpreendentemente bem.');
   };
 
+  const handleShare = () => {
+    Share.share({
+      message: `Encontrei um(a) ${creature.name}! Ameaça ${creature.threat} · #AindaVivo #ÃtacaApp`,
+    }).catch(() => {
+      Alert.alert('Não foi possível compartilhar', 'Tente novamente em instantes.');
+    });
+  };
+
+  const handleOpenSettings = () => {
+    Linking.openSettings().catch(() => {
+      Alert.alert('Não foi possível abrir as configurações', 'Abra manualmente nas configurações do sistema.');
+    });
+  };
+
   const scanBtnLabel = scanning ? 'Escaneando…' : scanDone ? 'Escanear novamente' : 'Escanear criatura';
 
   return (
@@ -132,13 +151,58 @@ export function CyclopsScreen() {
       <Text style={styles.title}>Scanner de Ciclope</Text>
 
       <View style={styles.viewfinderCard}>
-        <CyclopsViewfinderSvg scanning={scanning} focused={scanning || scanDone} />
-        <View style={styles.recordingBadge}>
-          <Text style={styles.recordingBadgeText}>● GRAVANDO</Text>
-        </View>
-        <View style={styles.confBadge}>
-          <Text style={styles.confBadgeText}>{creature.conf}% confiança</Text>
-        </View>
+        {permission === null ? (
+          <CyclopsViewfinderSvg scanning={scanning} focused={scanning || scanDone} />
+        ) : permission.granted && isFocused ? (
+          <>
+            <CameraView style={styles.cameraFill} facing="back" />
+            <View style={styles.frameOverlay} pointerEvents="none">
+              <CyclopsViewfinderSvg scanning={scanning} focused={scanning || scanDone} variant="frame" />
+            </View>
+            <View style={styles.recordingBadge}>
+              <Text style={styles.recordingBadgeText}>● GRAVANDO</Text>
+            </View>
+            <View style={styles.confBadge}>
+              <Text style={styles.confBadgeText}>{creature.conf}% confiança</Text>
+            </View>
+          </>
+        ) : permission.granted ? (
+          <CyclopsViewfinderSvg scanning={scanning} focused={scanning || scanDone} />
+        ) : (
+          <>
+            <CyclopsViewfinderSvg scanning={scanning} focused={scanning || scanDone} />
+            {permission.canAskAgain !== false ? (
+              <View style={styles.permissionOverlay}>
+                <Text style={styles.permissionOverlayText}>
+                  O Ãtaca usa a câmera para o Scanner de Ciclope — a simulação de detecção de criaturas mitológicas ao
+                  seu redor.
+                </Text>
+                <TouchableOpacity
+                  style={styles.permissionButton}
+                  activeOpacity={0.85}
+                  onPress={requestPermission}
+                  accessibilityRole="button"
+                  accessibilityLabel="Ativar câmera"
+                >
+                  <Text style={styles.permissionButtonText}>Ativar câmera</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View style={styles.permissionOverlay}>
+                <Text style={styles.permissionOverlayText}>Sem acesso à câmera</Text>
+                <TouchableOpacity
+                  style={styles.permissionButton}
+                  activeOpacity={0.85}
+                  onPress={handleOpenSettings}
+                  accessibilityRole="button"
+                  accessibilityLabel="Abrir configurações"
+                >
+                  <Text style={styles.permissionButtonText}>Abrir configurações</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </>
+        )}
       </View>
 
       <Text style={styles.chipsLabel}>ALVO SIMULADO (DEMO)</Text>
@@ -202,7 +266,7 @@ export function CyclopsScreen() {
           <TouchableOpacity
             style={styles.shareButton}
             activeOpacity={0.85}
-            onPress={() => setShareOpen(true)}
+            onPress={handleShare}
             accessibilityRole="button"
             accessibilityLabel="Compartilhar alerta"
           >
@@ -226,24 +290,6 @@ export function CyclopsScreen() {
           </View>
         </View>
       )}
-
-      <Modal visible={shareOpen} transparent animationType="fade" onRequestClose={() => setShareOpen(false)}>
-        <TouchableWithoutFeedback onPress={() => setShareOpen(false)}>
-          <View style={styles.shareOverlay}>
-            <TouchableWithoutFeedback>
-              <View style={styles.shareModalCard}>
-                <View style={styles.sharePreview}>
-                  <Text style={styles.sharePreviewTitle}>Encontrei um(a) {creature.name}</Text>
-                  <Text style={styles.sharePreviewSubtitle}>
-                    Ameaça {creature.threat} · #AindaVivo #ÃtacaApp
-                  </Text>
-                </View>
-                <Text style={styles.shareHint}>toque fora para fechar</Text>
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
     </ScrollView>
   );
 }
@@ -278,6 +324,41 @@ const styles = StyleSheet.create({
     aspectRatio: 1 / 1.05,
     overflow: 'hidden',
     position: 'relative',
+  },
+  cameraFill: {
+    flex: 1,
+    borderRadius: radius.lgAlt,
+    overflow: 'hidden',
+  },
+  frameOverlay: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  permissionOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(12,31,36,.85)',
+    borderRadius: radius.lgAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.lg,
+  },
+  permissionOverlayText: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: typography.fontSize.captionLarge,
+    color: colors.cardWhite,
+    textAlign: 'center',
+    lineHeight: 18,
+  },
+  permissionButton: {
+    marginTop: spacing.md,
+    backgroundColor: colors.secondary,
+    borderRadius: radius.sm,
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.sm + 2,
+  },
+  permissionButtonText: {
+    fontFamily: 'Inter_700Bold',
+    fontSize: typography.fontSize.captionLarge,
+    color: colors.cardWhite,
   },
   recordingBadge: {
     position: 'absolute',
@@ -448,44 +529,5 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_400Regular',
     fontSize: typography.fontSize.caption,
     color: colors.textTertiaryAccessible,
-  },
-  shareOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(23,20,14,.55)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing.xxl - 2,
-  },
-  shareModalCard: {
-    width: '100%',
-    maxWidth: 280,
-    backgroundColor: colors.background,
-    borderRadius: radius.lgAlt,
-    padding: spacing.lg,
-  },
-  sharePreview: {
-    backgroundColor: colors.cardWhite,
-    borderRadius: radius.md,
-    padding: spacing.base,
-    borderWidth: 1,
-    borderColor: colors.borderSubtle,
-  },
-  sharePreviewTitle: {
-    fontFamily: 'Cinzel_700Bold',
-    fontSize: typography.fontSize.bodyLarge,
-    color: colors.textPrimary,
-  },
-  sharePreviewSubtitle: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: typography.fontSize.caption,
-    color: colors.textTertiary,
-    marginTop: spacing.xs,
-  },
-  shareHint: {
-    marginTop: spacing.md,
-    textAlign: 'center',
-    fontFamily: 'Inter_400Regular',
-    fontSize: typography.fontSize.caption,
-    color: colors.textTertiary,
   },
 });

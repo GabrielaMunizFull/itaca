@@ -13,3 +13,11 @@ jest.mock('react-native-safe-area-context', () => {
   const mock = require('react-native-safe-area-context/jest/mock');
   return mock.default ?? mock;
 });
+
+jest.mock('expo-camera', () => {
+  const { View } = require('react-native');
+  return {
+    useCameraPermissions: () => [{ granted: true, canAskAgain: true }, jest.fn()],
+    CameraView: View,
+  };
+});

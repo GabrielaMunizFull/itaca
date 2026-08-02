@@ -15,11 +15,19 @@ import { colors } from '../theme/tokens';
 interface CyclopsViewfinderSvgProps {
   scanning: boolean;
   focused: boolean;
+  /**
+   * 'full' (padrão) desenha o fundo do viewfinder + ilustração do olho de
+   * ciclope — usado como fallback visual antes da permissão de câmera ser
+   * concedida. 'frame' desenha só a moldura de foco (cantos) + linha de
+   * scan, com fundo transparente — usado como overlay por cima do
+   * `CameraView` real quando a câmera está ativa.
+   */
+  variant?: 'full' | 'frame';
 }
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
-export function CyclopsViewfinderSvg({ scanning, focused }: CyclopsViewfinderSvgProps) {
+export function CyclopsViewfinderSvg({ scanning, focused, variant = 'full' }: CyclopsViewfinderSvgProps) {
   const bob = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -41,11 +49,15 @@ export function CyclopsViewfinderSvg({ scanning, focused }: CyclopsViewfinderSvg
 
   return (
     <Svg viewBox="0 0 100 105" width="100%" height="100%" style={{ display: 'flex' }}>
-      <Rect width={100} height={105} fill={colors.viewfinderBg} />
-      <Path d="M20,80 Q30,40 50,35 Q70,40 80,80 Z" fill="#3a2a1c" opacity={0.7} />
-      <Circle cx={50} cy={50} r={9} fill="#e8dcb8" />
-      <Circle cx={50} cy={50} r={4.4} fill={colors.textPrimary} />
-      <Circle cx={50} cy={47} r={1.6} fill="#fff" opacity={0.7} />
+      {variant === 'full' && (
+        <>
+          <Rect width={100} height={105} fill={colors.viewfinderBg} />
+          <Path d="M20,80 Q30,40 50,35 Q70,40 80,80 Z" fill="#3a2a1c" opacity={0.7} />
+          <Circle cx={50} cy={50} r={9} fill="#e8dcb8" />
+          <Circle cx={50} cy={50} r={4.4} fill={colors.textPrimary} />
+          <Circle cx={50} cy={47} r={1.6} fill="#fff" opacity={0.7} />
+        </>
+      )}
       <G stroke={colors.oliveDark} fill="none" opacity={focused ? 1 : 0.35}>
         <Path d="M32,28 v-6 h6" />
         <Path d="M68,28 v-6 h-6" />

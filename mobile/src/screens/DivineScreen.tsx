@@ -8,8 +8,8 @@
  * `DEITY_REPLIES`, `togglePoseidon`, `openSOS`/`closeSOS`).
  */
 
-import React, { useState } from 'react';
-import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppStore } from '../store/useAppStore';
 import { colors, radius, spacing, typography } from '../theme/tokens';
@@ -24,6 +24,8 @@ interface Contact {
   statusText: string;
   mutable: boolean;
 }
+
+const normalize = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
 const CONTACTS: Contact[] = [
   { id: 'atena', name: 'Atena', role: 'Deusa da Sabedoria', status: 'online', statusText: 'Online · responde em segundos', mutable: false },
@@ -87,6 +89,17 @@ export function DivineScreen() {
 
   const [sosOpen, setSosOpen] = useState(false);
   const [sosReply, setSosReply] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredContacts = useMemo(() => {
+    const query = normalize(searchQuery.trim());
+    if (!query) {
+      return CONTACTS;
+    }
+    return CONTACTS.filter(
+      (contact) => normalize(contact.name).includes(query) || normalize(contact.role).includes(query)
+    );
+  }, [searchQuery]);
 
   const handleOpenSOS = () => {
     const reply = openSOS();
@@ -106,18 +119,29 @@ export function DivineScreen() {
       <Text style={styles.title}>Central de Ajuda Divina</Text>
 
       <View style={styles.searchBox}>
-        <Text style={styles.searchText}>🔍 Buscar divindade, ninfa ou monstro amistoso…</Text>
+        <TextInput
+          style={styles.searchText}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          placeholder="🔍 Buscar divindade, ninfa ou monstro amistoso…"
+          placeholderTextColor={colors.textTertiary}
+          accessibilityLabel="Buscar divindade, ninfa ou monstro amistoso"
+        />
       </View>
 
       <View style={styles.contactsList}>
-        {CONTACTS.map((contact) => (
-          <ContactRow
-            key={contact.id}
-            contact={contact}
-            poseidonMuted={poseidonMuted}
-            onTogglePoseidon={togglePoseidon}
-          />
-        ))}
+        {filteredContacts.length === 0 ? (
+          <Text style={styles.noResultsText}>Nenhum contato encontrado</Text>
+        ) : (
+          filteredContacts.map((contact) => (
+            <ContactRow
+              key={contact.id}
+              contact={contact}
+              poseidonMuted={poseidonMuted}
+              onTogglePoseidon={togglePoseidon}
+            />
+          ))
+        )}
       </View>
 
       <View style={styles.warningBanner}>
@@ -206,6 +230,13 @@ const styles = StyleSheet.create({
     marginTop: spacing.base - 2,
     flexDirection: 'column',
     gap: spacing.sm,
+  },
+  noResultsText: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: typography.fontSize.captionLarge,
+    color: colors.textTertiary,
+    textAlign: 'center',
+    paddingVertical: spacing.md,
   },
   contactRow: {
     backgroundColor: colors.cardWhite,
