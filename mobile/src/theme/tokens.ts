@@ -1,0 +1,360 @@
+/**
+ * Design Tokens — Ítaca App
+ *
+ * Fonte de verdade: seção "Design Tokens" do `README.md` (raiz do repo),
+ * extraída de `Itaca App.dc.html`. Todos os valores abaixo batem
+ * exatamente com o README; onde o README documenta uma faixa (ex: escala
+ * tipográfica, radius, sombras) em vez de um único número, os degraus da
+ * faixa foram nomeados semanticamente e sinalizados nos comentários.
+ *
+ * Consumo esperado (React Native / Expo):
+ *
+ *   import { colors, typography, spacing, radius } from '../theme/tokens';
+ *   const styles = StyleSheet.create({
+ *     card: { backgroundColor: colors.cardWhite, borderRadius: radius.md },
+ *   });
+ */
+
+// ---------------------------------------------------------------------------
+// Cores
+// ---------------------------------------------------------------------------
+export const colors = {
+  // Fundo base do app (tela do device)
+  background: '#EFE2C4',
+
+  // Marca — terracota. Ação primária, destaques, CTAs.
+  primary: '#BF5B33',
+  // Variante escura da cor primária — estados pressed/hover, textos sobre
+  // fundo claro que precisem de mais contraste, bordas de ênfase.
+  primaryDark: '#8F4023',
+
+  // Azul-Egeu — cor secundária de marca (navegação, ícones, elementos de
+  // identidade que não competem com o terracota primário).
+  secondary: '#17454F',
+  // Variante clara do azul-Egeu — estados hover/pressed da secundária,
+  // fundos leves com identidade de marca.
+  secondaryLight: '#2B6E82',
+
+  // Dourado — acentos decorativos, badges, elementos de destaque premium.
+  gold: '#B9924A',
+
+  // Neutras / superfícies
+  cardBeige: '#E3D3A8', // fundo de cards padrão
+  cardWhite: '#fff8e8', // fundo de cards que precisam de mais contraste/leveza
+  warningCream: '#F3E4C1', // fundo de banners/avisos não críticos
+
+  // Verde oliva — usado em conjunto (par claro/escuro) para estados
+  // positivos e elementos de sucesso que não sejam o "online" de presença.
+  oliveLight: '#dfe9dc',
+  oliveDark: '#6E8F4B',
+
+  // Feedback
+  danger: '#9C2E1E', // erros, ações destrutivas, validações negativas
+
+  // Texto
+  textPrimary: '#2E2418', // títulos e corpo de texto principal
+  textSecondary: '#5B4C36', // legendas, metadados, texto de apoio
+  textTertiary: '#8a7a63', // placeholders, texto desabilitado/menos importante — USO DECORATIVO/DE VOZ apenas (labels, dica do splash, legenda de mapa, texto de botão CTA); NÃO usar para conteúdo informativo que o usuário precisa ler (falha WCAG AA nos fundos abaixo)
+  // Variante mais escura de `textTertiary`, na mesma família marrom/oliva,
+  // criada para atender WCAG AA (>=4.5:1) em TEXTO INFORMATIVO real
+  // (descrições de card, timestamps de lista, legendas de valor) — onde
+  // `textTertiary` falha o contraste mínimo. Usar `textTertiary` continua
+  // correto para elementos decorativos/de voz de marca.
+  //
+  // Contraste (fórmula WCAG, luminância relativa): antes (`textTertiary`
+  // #8a7a63) vs. depois (`textTertiaryAccessible` #675841):
+  //   - vs. colors.background (#EFE2C4): 3.24:1 -> 5.36:1
+  //   - vs. colors.cardBeige  (#E3D3A8): 2.80:1 -> 4.64:1  (pior caso / piso)
+  //   - vs. colors.cardWhite  (#fff8e8): 3.93:1 -> 6.51:1
+  // Todos os 3 fundos passam AA (>=4.5:1) com o novo valor.
+  textTertiaryAccessible: '#675841',
+
+  // Status de presença/estado do usuário. Valores hex definidos
+  // explicitamente no README (seção Design Tokens > Cores).
+  status: {
+    online: '#6E8F4B', // oliveDark — presente/ativo
+    away: '#B9924A', // gold — ausente temporariamente
+    busy: '#8F4023', // primaryDark — ocupado, não perturbe
+    danger: '#9C2E1E', // erro/perigo, ameaça crítica
+    blocked: '#8a7a63', // textTertiary — bloqueado/impedido
+    waiting: '#5B4C36', // textSecondary — aguardando ação/resposta
+  },
+
+  // Estado "off" de toggles/switches (`Itaca App.dc.html`, `*OnColor`
+  // quando falso).
+  toggleOff: '#c9bb96',
+
+  // Fundo do card do mapa de perigo (tela Sereia).
+  dangerMapBg: '#3a1712',
+  // Fundo interno do SVG do mapa de perigo (rect de dentro do card acima).
+  dangerMapInner: '#123038',
+
+  // Fundo do viewfinder do Scanner de Ciclope (tela Ciclope).
+  viewfinderBg: '#0c1f24',
+
+  // Bordas sutis `rgba(46,36,24, X)` repetidas no protótipo — apenas os
+  // alphas exatamente documentados viram token; demais permanecem literais.
+  borderSubtle: 'rgba(46,36,24,.08)',
+  borderSubtleStrong: 'rgba(46,36,24,.15)',
+
+  // Overlay escuro por trás de modais (ex: modal SOS da Central de Ajuda
+  // Divina).
+  modalOverlay: 'rgba(23,20,14,.55)',
+  // Borda superior da tab bar / bordas de card sutis com alpha .1
+  // (repetida em `MainTabs` e `OnboardingScreen`).
+  tabBarBorder: 'rgba(46,36,24,.1)',
+  // Borda de ênfase sobre `warningCream` (cards de ETA/aviso).
+  warningBorderStrong: 'rgba(191,91,51,.25)',
+  // Borda sutil com tom secundário (azul-Egeu) — botões/cards outline.
+  secondaryBorderSubtle: 'rgba(23,69,79,.3)',
+
+  // Cor do label "PENÉLOPE — FIXADO" no card fixado da tela Status para
+  // Penélope.
+  penelopeLabel: '#4a5f3d',
+} as const;
+
+// Formato estrutural de `colors` (mesmo shape, mas com `string` em vez de
+// literais) — usado por `darkColors` (valores computados, não literais) e
+// por qualquer consumidor que precise trocar entre paleta clara/escura em
+// tempo de execução (ver `useThemeColors`).
+export type ThemeColors = {
+  [K in keyof typeof colors]: (typeof colors)[K] extends string
+    ? string
+    : { [SK in keyof (typeof colors)[K]]: string };
+};
+
+// ---------------------------------------------------------------------------
+// Modo noturno — paleta escura calculada matematicamente
+// ---------------------------------------------------------------------------
+// Replica exatamente o filtro CSS do protótipo (`Itaca App.dc.html`, seção
+// "7. Configurações"): `filter: brightness(.78) saturate(.82)
+// hue-rotate(-8deg)`, aplicado sobre cada cor de `colors` (na mesma ordem em
+// que os filtros aparecem no CSS, cada um operando sobre o resultado do
+// anterior). Fórmulas idênticas ao W3C Filter Effects Module (as mesmas
+// usadas pelos navegadores para os filtros CSS `brightness`/`saturate`/
+// `hue-rotate`).
+
+// Clampa um canal de cor para a faixa válida 0-255 (arredondando antes),
+// reaproveitado tanto por `rgbToHex` quanto pelos 3 estágios de
+// `nightFilter` abaixo — mantém uma única fonte de verdade para a regra de
+// clamping (equivalente ao que o navegador faz entre cada estágio de um
+// `filter` CSS encadeado).
+function clamp255(n: number): number {
+  return Math.max(0, Math.min(255, Math.round(n)));
+}
+
+function hexToRgb(hex: string): [number, number, number] {
+  const clean = hex.replace('#', '');
+  const r = parseInt(clean.substring(0, 2), 16);
+  const g = parseInt(clean.substring(2, 4), 16);
+  const b = parseInt(clean.substring(4, 6), 16);
+  return [r, g, b];
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  const toHex = (n: number) => clamp255(n).toString(16).padStart(2, '0');
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+// Parser mínimo para os literais `rgba(r,g,b,a)`/`rgb(r,g,b)` usados em
+// `colors` (ex: `borderSubtle`) — não é um parser CSS genérico.
+function parseRgbaLiteral(value: string): [number, number, number, number] | null {
+  const match = value.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+)\s*)?\)$/i);
+  if (!match) {
+    return null;
+  }
+  const [, r, g, b, a] = match;
+  return [Number(r), Number(g), Number(b), a !== undefined ? Number(a) : 1];
+}
+
+function applyBrightness([r, g, b]: [number, number, number], amount: number): [number, number, number] {
+  return [r * amount, g * amount, b * amount];
+}
+
+function applySaturate([r, g, b]: [number, number, number], s: number): [number, number, number] {
+  const nr = (0.213 + 0.787 * s) * r + (0.715 - 0.715 * s) * g + (0.072 - 0.072 * s) * b;
+  const ng = (0.213 - 0.213 * s) * r + (0.715 + 0.285 * s) * g + (0.072 - 0.072 * s) * b;
+  const nb = (0.213 - 0.213 * s) * r + (0.715 - 0.715 * s) * g + (0.072 + 0.928 * s) * b;
+  return [nr, ng, nb];
+}
+
+function applyHueRotate([r, g, b]: [number, number, number], deg: number): [number, number, number] {
+  const rad = (deg * Math.PI) / 180;
+  const cos = Math.cos(rad);
+  const sin = Math.sin(rad);
+  const nr =
+    (0.213 + cos * 0.787 - sin * 0.213) * r +
+    (0.715 - cos * 0.715 - sin * 0.715) * g +
+    (0.072 - cos * 0.072 + sin * 0.928) * b;
+  const ng =
+    (0.213 - cos * 0.213 + sin * 0.143) * r +
+    (0.715 + cos * 0.285 + sin * 0.14) * g +
+    (0.072 - cos * 0.072 - sin * 0.283) * b;
+  const nb =
+    (0.213 - cos * 0.213 - sin * 0.787) * r +
+    (0.715 - cos * 0.715 + sin * 0.715) * g +
+    (0.072 + cos * 0.928 + sin * 0.072) * b;
+  return [nr, ng, nb];
+}
+
+// Ordem igual ao CSS `filter: brightness(.78) saturate(.82) hue-rotate(-8deg)`
+// (cada filtro é aplicado sobre o resultado do anterior). Aceita tanto
+// `#RRGGBB` quanto `rgba(r,g,b,a)`/`rgb(r,g,b)` (preservando o alpha
+// original em rgba, já que o filtro CSS não altera opacidade).
+// Clampa os 3 canais de uma tupla RGB de uma vez, chamado após cada estágio
+// do filtro em `nightFilter` — um filtro CSS real clampa o resultado a cada
+// estágio (brightness -> saturate -> hue-rotate), em vez de só no final.
+function clampRgb([r, g, b]: [number, number, number]): [number, number, number] {
+  return [clamp255(r), clamp255(g), clamp255(b)];
+}
+
+function nightFilter(value: string): string {
+  const rgba = parseRgbaLiteral(value);
+  const isRgba = rgba !== null;
+  let rgb: [number, number, number] = isRgba ? [rgba[0], rgba[1], rgba[2]] : hexToRgb(value);
+
+  rgb = clampRgb(applyBrightness(rgb, 0.78));
+  rgb = clampRgb(applySaturate(rgb, 0.82));
+  rgb = clampRgb(applyHueRotate(rgb, -8));
+
+  if (isRgba) {
+    const [r, g, b] = rgb;
+    return `rgba(${r},${g},${b},${rgba[3]})`;
+  }
+  return rgbToHex(...rgb);
+}
+
+// Paleta noturna — computada uma única vez no module load (não a cada
+// render/chamada). Trocável via `useThemeColors` conforme `darkMode` no
+// `useAppStore`.
+export const darkColors: ThemeColors = {
+  ...(Object.fromEntries(
+    Object.entries(colors)
+      .filter(([key]) => key !== 'status')
+      .map(([key, value]) => [key, nightFilter(value as string)])
+  ) as Omit<ThemeColors, 'status'>),
+  status: Object.fromEntries(
+    Object.entries(colors.status).map(([key, value]) => [key, nightFilter(value)])
+  ) as ThemeColors['status'],
+};
+
+// ---------------------------------------------------------------------------
+// Tipografia
+// ---------------------------------------------------------------------------
+export const typography = {
+  fontFamily: {
+    // Cinzel — usada em títulos e elementos de identidade (headers, logo,
+    // nomes de destaque). Carregar via expo-font com os pesos abaixo.
+    heading: 'Cinzel',
+    // Inter — usada em corpo de texto, labels, botões e demais componentes
+    // de UI.
+    body: 'Inter',
+  },
+
+  // Pesos disponíveis por família, conforme especificado.
+  fontWeight: {
+    heading: {
+      semibold: '600',
+      bold: '700',
+      black: '900',
+    },
+    body: {
+      regular: '400',
+      medium: '500',
+      semibold: '600',
+      bold: '700',
+    },
+  },
+
+  // Escala tipográfica — degraus exatos listados no README ("Escala
+  // usada: 34px (splash), 26px (nome herói), 24px (títulos de tela),
+  // 20px (valores de destaque), 16px (nome de criatura), 13–14px
+  // (corpo/botões), 11–12px (legendas), 9–10px (badges/microtexto)").
+  // Faixas de 2px foram nomeadas como par base/large.
+  fontSize: {
+    micro: 9, // badges/microtexto — piso da faixa 9–10px
+    microLarge: 10, // badges/microtexto — teto da faixa 9–10px
+    caption: 11, // legendas, metadados — piso da faixa 11–12px
+    captionLarge: 12, // legendas, metadados — teto da faixa 11–12px
+    body: 13, // corpo de texto/botões — piso da faixa 13–14px
+    bodyLarge: 14, // corpo de texto/botões — teto da faixa 13–14px
+    creatureName: 16, // nome de criatura
+    title: 20, // valores de destaque
+    titleMedium: 22, // título do Onboarding (`Itaca App.dc.html`)
+    titleLarge: 24, // títulos de tela
+    heroName: 26, // nome do herói
+    splash: 34, // splash — maior elemento tipográfico do app
+  },
+} as const;
+
+// ---------------------------------------------------------------------------
+// Espaçamento
+// ---------------------------------------------------------------------------
+// Escala em múltiplos de 4px/8px, alinhada aos valores de padding/gap
+// documentados (padding padrão de tela: 20px horizontal / 100px inferior;
+// gaps: 8–10px).
+export const spacing = {
+  xs: 4,
+  sm: 8,
+  gapSm: 8, // gap padrão entre elementos pequenos (listas, chips)
+  gapMd: 10, // gap padrão entre elementos médios (cards, seções curtas)
+  md: 12,
+  base: 16,
+  lg: 20, // padding horizontal padrão de tela
+  lgAlt: 22, // padding horizontal do Onboarding/Settings (`Itaca App.dc.html`)
+  xl: 24,
+  xxl: 32,
+  screenBottom: 100, // padding inferior padrão de tela (libera espaço da bottom nav)
+  bottomNavHeight: 64, // altura da barra de navegação inferior
+} as const;
+
+// ---------------------------------------------------------------------------
+// Raios de borda
+// ---------------------------------------------------------------------------
+export const radius = {
+  sm: 10, // inputs, elementos pequenos
+  md: 12, // cards padrão — piso da faixa 12–14px
+  mdAlt: 14, // cards padrão — teto da faixa 12–14px
+  lg: 16, // cards grandes/modais — piso da faixa 16–18px
+  lgAlt: 18, // cards grandes/modais — teto da faixa 16–18px
+  xl: 20, // pills, toggles
+  full: 9999, // avatares, FAB, botões de ícone (equivalente a 50%)
+} as const;
+
+// ---------------------------------------------------------------------------
+// Sombras
+// ---------------------------------------------------------------------------
+// Valores documentados no README (CSS box-shadow do protótipo web),
+// convertidos para o formato de elevação do React Native. Offset Y e
+// shadowRadius aproximam o blur/offset do box-shadow original; elevation é
+// um equivalente aproximado para Android (sem `box-shadow` nativo).
+export const shadows = {
+  // `0 6px 16px rgba(0,0,0,.3)` — toasts
+  toast: {
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 6, // Android
+  },
+  // `0 10px 24px rgba(0,0,0,.25)` — dropdowns/modais
+  modal: {
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 24,
+    elevation: 10, // Android
+  },
+} as const;
+
+// ---------------------------------------------------------------------------
+// Breakpoints
+// ---------------------------------------------------------------------------
+// NÃO documentado no README — o protótipo de referência (`Itaca App.dc.html`)
+// usa um único device frame fixo (390×844px, proporção iPhone), sem layout
+// responsivo especificado. Mantido como token complementar, mobile-first,
+// apenas para eventual diferenciação telefone/tablet no app nativo.
+export const breakpoints = {
+  phone: 0,
+  tablet: 768,
+} as const;
