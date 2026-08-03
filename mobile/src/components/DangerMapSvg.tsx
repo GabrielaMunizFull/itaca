@@ -10,7 +10,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated } from 'react-native';
 import Svg, { Circle, Path, Rect, Text as SvgText } from 'react-native-svg';
-import { colors } from '../theme/tokens';
+import { useThemeColors } from '../theme/useThemeColors';
 
 const ROUTE_D =
   'M85,12 Q76,19 68,26 Q58,21 48,16 Q38,24 28,32 Q40,39 52,46 Q63,51 74,56 Q56,61 38,66 Q28,59 18,52 Q16,63 14,74 Q23,81 33,88 Q20,91 8,94';
@@ -18,6 +18,7 @@ const ROUTE_D =
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 export function DangerMapSvg() {
+  const colors = useThemeColors();
   const pulse = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {

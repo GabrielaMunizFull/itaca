@@ -6,15 +6,18 @@
  * `Itaca App.dc.html`.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DangerMapSvg } from '../components/DangerMapSvg';
 import { Toggle } from '../components/Toggle';
 import { useAppStore } from '../store/useAppStore';
-import { colors, radius, spacing, typography } from '../theme/tokens';
+import { radius, spacing, typography, type ThemeColors } from '../theme/tokens';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export function SirenScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const mastTied = useAppStore((s) => s.mastTied);
   const toggleMast = useAppStore((s) => s.toggleMast);
   const earplugs = useAppStore((s) => s.earplugs);
@@ -96,7 +99,8 @@ export function SirenScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ThemeColors) {
+  return StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.background,
@@ -256,4 +260,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 18,
   },
-});
+  });
+}

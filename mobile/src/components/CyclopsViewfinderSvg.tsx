@@ -10,7 +10,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated } from 'react-native';
 import Svg, { Circle, G, Path, Rect } from 'react-native-svg';
-import { colors } from '../theme/tokens';
+import { useThemeColors } from '../theme/useThemeColors';
 
 interface CyclopsViewfinderSvgProps {
   scanning: boolean;
@@ -28,6 +28,7 @@ interface CyclopsViewfinderSvgProps {
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
 export function CyclopsViewfinderSvg({ scanning, focused, variant = 'full' }: CyclopsViewfinderSvgProps) {
+  const colors = useThemeColors();
   const bob = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -52,6 +53,10 @@ export function CyclopsViewfinderSvg({ scanning, focused, variant = 'full' }: Cy
       {variant === 'full' && (
         <>
           <Rect width={100} height={105} fill={colors.viewfinderBg} />
+          {/* Silhueta/olho do ciclope: cores fixas de ilustração (traçado 1:1
+              de `Itaca App.dc.html`), não elementos de UI — mantidas
+              intencionalmente fora de `colors`/`nightFilter` para preservar
+              o desenho como referência, igual ao protótipo web. */}
           <Path d="M20,80 Q30,40 50,35 Q70,40 80,80 Z" fill="#3a2a1c" opacity={0.7} />
           <Circle cx={50} cy={50} r={9} fill="#e8dcb8" />
           <Circle cx={50} cy={50} r={4.4} fill={colors.textPrimary} />

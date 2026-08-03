@@ -6,7 +6,7 @@
  * notificações é estado local (não vai pro `useAppStore`).
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import type { CompositeNavigationProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -17,7 +17,8 @@ import { BellIcon, GearIcon, SunIcon } from '../components/icons';
 import { RouteMapSvg } from '../components/RouteMapSvg';
 import type { MainTabsParamList, RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
-import { colors, radius, shadows, spacing, typography } from '../theme/tokens';
+import { radius, shadows, spacing, typography, type ThemeColors } from '../theme/tokens';
+import { useThemeColors } from '../theme/useThemeColors';
 
 // Copiadas 1:1 do array `NOTIFICATIONS` em `Itaca App.dc.html`.
 const NOTIFICATIONS = [
@@ -47,6 +48,8 @@ const DEVIATIONS = [
 ];
 
 export function HomeScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const heroName = useAppStore((s) => s.heroName);
   const insets = useSafeAreaInsets();
@@ -178,7 +181,8 @@ export function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ThemeColors) {
+  return StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.background,
@@ -271,7 +275,7 @@ const styles = StyleSheet.create({
   },
   etaCardWarning: {
     backgroundColor: colors.warningCream,
-    borderColor: 'rgba(191,91,51,.25)',
+    borderColor: colors.warningBorderStrong,
   },
   etaLabel: {
     fontFamily: 'Inter_400Regular',
@@ -388,7 +392,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: 'rgba(23,69,79,.3)',
+    borderColor: colors.secondaryBorderSubtle,
     borderRadius: radius.mdAlt,
     paddingVertical: spacing.md,
     alignItems: 'center',
@@ -398,4 +402,5 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.captionLarge,
     color: colors.secondary,
   },
-});
+  });
+}

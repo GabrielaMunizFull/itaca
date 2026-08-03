@@ -180,6 +180,16 @@ describe('useAppStore', () => {
     });
   });
 
+  describe('toggleDarkMode', () => {
+    it('alterna darkMode', () => {
+      const before = useAppStore.getState().darkMode;
+      useAppStore.getState().toggleDarkMode();
+      expect(useAppStore.getState().darkMode).toBe(!before);
+      useAppStore.getState().toggleDarkMode();
+      expect(useAppStore.getState().darkMode).toBe(before);
+    });
+  });
+
   describe('openSOS', () => {
     it('retorna uma resposta dentro de DEITY_REPLIES e grava no sosLog', () => {
       const reply = useAppStore.getState().openSOS();

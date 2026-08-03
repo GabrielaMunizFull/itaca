@@ -1,24 +1,30 @@
 /**
  * SettingsScreen — Ãtaca App
  *
- * Editar nome do herói/navio. Modo noturno e "recomeçar jornada" ficam
- * fora do escopo MVP (`Itaca App.dc.html` seção 7).
+ * Editar nome do herói/navio, alternar modo noturno. "Recomeçar jornada"
+ * fica fora do escopo MVP (`Itaca App.dc.html` seção 7).
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Toggle } from '../components/Toggle';
 import type { RootStackParamList } from '../navigation/types';
 import { useAppStore } from '../store/useAppStore';
-import { colors, radius, spacing, typography } from '../theme/tokens';
+import { radius, spacing, typography, type ThemeColors } from '../theme/tokens';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export function SettingsScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Settings'>>();
   const heroName = useAppStore((s) => s.heroName);
   const shipName = useAppStore((s) => s.shipName);
   const saveSettings = useAppStore((s) => s.saveSettings);
+  const darkMode = useAppStore((s) => s.darkMode);
+  const toggleDarkMode = useAppStore((s) => s.toggleDarkMode);
   const insets = useSafeAreaInsets();
 
   const [name, setName] = useState(heroName);
@@ -58,11 +64,20 @@ export function SettingsScreen() {
       >
         <Text style={styles.saveButtonText}>Salvar alterações</Text>
       </TouchableOpacity>
+
+      <View style={styles.toggleCard}>
+        <View style={styles.toggleContent}>
+          <Text style={styles.toggleTitle}>Modo noturno no mar</Text>
+          <Text style={styles.toggleSubtitle}>para quando o Sol também desiste de você</Text>
+        </View>
+        <Toggle value={darkMode} onValueChange={toggleDarkMode} />
+      </View>
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ThemeColors) {
+  return StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.background,
@@ -111,6 +126,30 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.body,
     color: colors.textPrimary,
   },
+  toggleCard: {
+    marginTop: spacing.lg,
+    backgroundColor: colors.cardBeige,
+    borderRadius: radius.mdAlt,
+    padding: spacing.md,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  toggleContent: {
+    flex: 1,
+    paddingRight: spacing.md,
+  },
+  toggleTitle: {
+    fontFamily: 'Inter_700Bold',
+    fontSize: typography.fontSize.body,
+    color: colors.textPrimary,
+  },
+  toggleSubtitle: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: typography.fontSize.caption,
+    color: colors.textTertiary,
+    marginTop: 2,
+  },
   saveButton: {
     marginTop: spacing.md,
     width: '100%',
@@ -124,4 +163,5 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.captionLarge,
     color: colors.cardWhite,
   },
-});
+  });
+}

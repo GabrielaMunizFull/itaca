@@ -12,7 +12,8 @@ import React, { useMemo, useState } from 'react';
 import { Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppStore } from '../store/useAppStore';
-import { colors, radius, spacing, typography } from '../theme/tokens';
+import { radius, spacing, typography, type ThemeColors } from '../theme/tokens';
+import { useThemeColors } from '../theme/useThemeColors';
 
 type ContactStatus = 'online' | 'away' | 'busy' | 'danger' | 'blocked' | 'waiting';
 
@@ -43,6 +44,8 @@ interface ContactRowProps {
 }
 
 function ContactRow({ contact, poseidonMuted, onTogglePoseidon }: ContactRowProps) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const isMutedPoseidon = contact.id === 'poseidon' && poseidonMuted;
   const dotColor = isMutedPoseidon ? colors.status.blocked : colors.status[contact.status];
   const statusText = isMutedPoseidon ? 'Silenciado · tempestades por sua conta e risco' : contact.statusText;
@@ -81,6 +84,8 @@ function ContactRow({ contact, poseidonMuted, onTogglePoseidon }: ContactRowProp
 }
 
 export function DivineScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const poseidonMuted = useAppStore((s) => s.poseidonMuted);
   const togglePoseidon = useAppStore((s) => s.togglePoseidon);
   const sosLog = useAppStore((s) => s.sosLog);
@@ -192,7 +197,8 @@ export function DivineScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ThemeColors) {
+  return StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.background,
@@ -366,7 +372,7 @@ const styles = StyleSheet.create({
   },
   sosOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(23,20,14,.55)',
+    backgroundColor: colors.modalOverlay,
     alignItems: 'center',
     justifyContent: 'center',
     padding: spacing.xxl - 2,
@@ -401,4 +407,5 @@ const styles = StyleSheet.create({
     color: colors.textTertiary,
     textAlign: 'center',
   },
-});
+  });
+}

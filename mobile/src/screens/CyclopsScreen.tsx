@@ -9,14 +9,15 @@
  * `Itaca App.dc.html` (`CREATURES`, `runScan`, `pickCreature`).
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useIsFocused } from '@react-navigation/native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { CyclopsViewfinderSvg } from '../components/CyclopsViewfinderSvg';
 import { useAppStore } from '../store/useAppStore';
-import { colors, radius, spacing, typography } from '../theme/tokens';
+import { radius, spacing, typography, type ThemeColors } from '../theme/tokens';
+import { useThemeColors } from '../theme/useThemeColors';
 import { formatTime } from '../utils/format';
 
 interface Creature {
@@ -74,6 +75,8 @@ const CREATURES: Creature[] = [
 const SCAN_DURATION_MS = 1300;
 
 export function CyclopsScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const selectedCreature = useAppStore((s) => s.selectedCreature);
   const pickCreature = useAppStore((s) => s.pickCreature);
   const scanHistory = useAppStore((s) => s.scanHistory);
@@ -294,7 +297,8 @@ export function CyclopsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ThemeColors) {
+  return StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.background,
@@ -487,7 +491,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderRadius: radius.sm,
     borderWidth: 1,
-    borderColor: 'rgba(23,69,79,.3)',
+    borderColor: colors.secondaryBorderSubtle,
     paddingVertical: spacing.sm + 2,
     alignItems: 'center',
   },
@@ -530,4 +534,5 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.caption,
     color: colors.textTertiaryAccessible,
   },
-});
+  });
+}

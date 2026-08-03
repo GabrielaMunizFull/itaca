@@ -96,7 +96,147 @@ export const colors = {
   // alphas exatamente documentados viram token; demais permanecem literais.
   borderSubtle: 'rgba(46,36,24,.08)',
   borderSubtleStrong: 'rgba(46,36,24,.15)',
+
+  // Overlay escuro por trás de modais (ex: modal SOS da Central de Ajuda
+  // Divina).
+  modalOverlay: 'rgba(23,20,14,.55)',
+  // Borda superior da tab bar / bordas de card sutis com alpha .1
+  // (repetida em `MainTabs` e `OnboardingScreen`).
+  tabBarBorder: 'rgba(46,36,24,.1)',
+  // Borda de ênfase sobre `warningCream` (cards de ETA/aviso).
+  warningBorderStrong: 'rgba(191,91,51,.25)',
+  // Borda sutil com tom secundário (azul-Egeu) — botões/cards outline.
+  secondaryBorderSubtle: 'rgba(23,69,79,.3)',
+
+  // Cor do label "PENÉLOPE — FIXADO" no card fixado da tela Status para
+  // Penélope.
+  penelopeLabel: '#4a5f3d',
 } as const;
+
+// Formato estrutural de `colors` (mesmo shape, mas com `string` em vez de
+// literais) — usado por `darkColors` (valores computados, não literais) e
+// por qualquer consumidor que precise trocar entre paleta clara/escura em
+// tempo de execução (ver `useThemeColors`).
+export type ThemeColors = {
+  [K in keyof typeof colors]: (typeof colors)[K] extends string
+    ? string
+    : { [SK in keyof (typeof colors)[K]]: string };
+};
+
+// ---------------------------------------------------------------------------
+// Modo noturno — paleta escura calculada matematicamente
+// ---------------------------------------------------------------------------
+// Replica exatamente o filtro CSS do protótipo (`Itaca App.dc.html`, seção
+// "7. Configurações"): `filter: brightness(.78) saturate(.82)
+// hue-rotate(-8deg)`, aplicado sobre cada cor de `colors` (na mesma ordem em
+// que os filtros aparecem no CSS, cada um operando sobre o resultado do
+// anterior). Fórmulas idênticas ao W3C Filter Effects Module (as mesmas
+// usadas pelos navegadores para os filtros CSS `brightness`/`saturate`/
+// `hue-rotate`).
+
+// Clampa um canal de cor para a faixa válida 0-255 (arredondando antes),
+// reaproveitado tanto por `rgbToHex` quanto pelos 3 estágios de
+// `nightFilter` abaixo — mantém uma única fonte de verdade para a regra de
+// clamping (equivalente ao que o navegador faz entre cada estágio de um
+// `filter` CSS encadeado).
+function clamp255(n: number): number {
+  return Math.max(0, Math.min(255, Math.round(n)));
+}
+
+function hexToRgb(hex: string): [number, number, number] {
+  const clean = hex.replace('#', '');
+  const r = parseInt(clean.substring(0, 2), 16);
+  const g = parseInt(clean.substring(2, 4), 16);
+  const b = parseInt(clean.substring(4, 6), 16);
+  return [r, g, b];
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  const toHex = (n: number) => clamp255(n).toString(16).padStart(2, '0');
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+// Parser mínimo para os literais `rgba(r,g,b,a)`/`rgb(r,g,b)` usados em
+// `colors` (ex: `borderSubtle`) — não é um parser CSS genérico.
+function parseRgbaLiteral(value: string): [number, number, number, number] | null {
+  const match = value.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+)\s*)?\)$/i);
+  if (!match) {
+    return null;
+  }
+  const [, r, g, b, a] = match;
+  return [Number(r), Number(g), Number(b), a !== undefined ? Number(a) : 1];
+}
+
+function applyBrightness([r, g, b]: [number, number, number], amount: number): [number, number, number] {
+  return [r * amount, g * amount, b * amount];
+}
+
+function applySaturate([r, g, b]: [number, number, number], s: number): [number, number, number] {
+  const nr = (0.213 + 0.787 * s) * r + (0.715 - 0.715 * s) * g + (0.072 - 0.072 * s) * b;
+  const ng = (0.213 - 0.213 * s) * r + (0.715 + 0.285 * s) * g + (0.072 - 0.072 * s) * b;
+  const nb = (0.213 - 0.213 * s) * r + (0.715 - 0.715 * s) * g + (0.072 + 0.928 * s) * b;
+  return [nr, ng, nb];
+}
+
+function applyHueRotate([r, g, b]: [number, number, number], deg: number): [number, number, number] {
+  const rad = (deg * Math.PI) / 180;
+  const cos = Math.cos(rad);
+  const sin = Math.sin(rad);
+  const nr =
+    (0.213 + cos * 0.787 - sin * 0.213) * r +
+    (0.715 - cos * 0.715 - sin * 0.715) * g +
+    (0.072 - cos * 0.072 + sin * 0.928) * b;
+  const ng =
+    (0.213 - cos * 0.213 + sin * 0.143) * r +
+    (0.715 + cos * 0.285 + sin * 0.14) * g +
+    (0.072 - cos * 0.072 - sin * 0.283) * b;
+  const nb =
+    (0.213 - cos * 0.213 - sin * 0.787) * r +
+    (0.715 - cos * 0.715 + sin * 0.715) * g +
+    (0.072 + cos * 0.928 + sin * 0.072) * b;
+  return [nr, ng, nb];
+}
+
+// Ordem igual ao CSS `filter: brightness(.78) saturate(.82) hue-rotate(-8deg)`
+// (cada filtro é aplicado sobre o resultado do anterior). Aceita tanto
+// `#RRGGBB` quanto `rgba(r,g,b,a)`/`rgb(r,g,b)` (preservando o alpha
+// original em rgba, já que o filtro CSS não altera opacidade).
+// Clampa os 3 canais de uma tupla RGB de uma vez, chamado após cada estágio
+// do filtro em `nightFilter` — um filtro CSS real clampa o resultado a cada
+// estágio (brightness -> saturate -> hue-rotate), em vez de só no final.
+function clampRgb([r, g, b]: [number, number, number]): [number, number, number] {
+  return [clamp255(r), clamp255(g), clamp255(b)];
+}
+
+function nightFilter(value: string): string {
+  const rgba = parseRgbaLiteral(value);
+  const isRgba = rgba !== null;
+  let rgb: [number, number, number] = isRgba ? [rgba[0], rgba[1], rgba[2]] : hexToRgb(value);
+
+  rgb = clampRgb(applyBrightness(rgb, 0.78));
+  rgb = clampRgb(applySaturate(rgb, 0.82));
+  rgb = clampRgb(applyHueRotate(rgb, -8));
+
+  if (isRgba) {
+    const [r, g, b] = rgb;
+    return `rgba(${r},${g},${b},${rgba[3]})`;
+  }
+  return rgbToHex(...rgb);
+}
+
+// Paleta noturna — computada uma única vez no module load (não a cada
+// render/chamada). Trocável via `useThemeColors` conforme `darkMode` no
+// `useAppStore`.
+export const darkColors: ThemeColors = {
+  ...(Object.fromEntries(
+    Object.entries(colors)
+      .filter(([key]) => key !== 'status')
+      .map(([key, value]) => [key, nightFilter(value as string)])
+  ) as Omit<ThemeColors, 'status'>),
+  status: Object.fromEntries(
+    Object.entries(colors.status).map(([key, value]) => [key, nightFilter(value)])
+  ) as ThemeColors['status'],
+};
 
 // ---------------------------------------------------------------------------
 // Tipografia

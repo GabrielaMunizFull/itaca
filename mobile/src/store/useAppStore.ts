@@ -4,8 +4,8 @@
  * Espelha o comportamento da classe `Component` do protótipo
  * `Itaca App.dc.html` (métodos `completeOnboarding`, `toggleMast`,
  * `toggleEarplugs`, `registerSiren`, `saveSettings`, `pickCreature`,
- * `runScan`, `sendSignal`, `addReaction`, `togglePoseidon`, `openSOS`),
- * restrito ao escopo do MVP (sem dark mode).
+ * `runScan`, `sendSignal`, `addReaction`, `togglePoseidon`, `openSOS`,
+ * `toggleDarkMode`).
  *
  * Persistência: AsyncStorage, equivalente ao `localStorage` (chave
  * `itaca-mvp-state`) do protótipo original.
@@ -81,6 +81,9 @@ interface AppState {
   posts: Post[];
   poseidonMuted: boolean;
   sosLog: SosLogEntry[];
+  // Modo noturno no mar — paleta escura calculada matematicamente sobre
+  // `colors` (ver `src/theme/tokens.ts`, `darkColors`/`useThemeColors`).
+  darkMode: boolean;
   // Indica se o estado persistido já terminou de ser reidratado do
   // AsyncStorage. Usado pelo RootNavigator para evitar flash de Onboarding
   // antes da reidratação concluir.
@@ -97,6 +100,7 @@ interface AppState {
   addReaction: (postId: string, type: ReactionType) => void;
   togglePoseidon: () => void;
   openSOS: () => string;
+  toggleDarkMode: () => void;
   setHasHydrated: (v: boolean) => void;
 }
 
@@ -170,6 +174,7 @@ export const useAppStore = create<AppState>()(
       posts: INITIAL_POSTS,
       poseidonMuted: false,
       sosLog: [],
+      darkMode: false,
       hasHydrated: false,
 
       completeOnboarding: (name, ship, archetype) =>
@@ -226,6 +231,8 @@ export const useAppStore = create<AppState>()(
 
       togglePoseidon: () => set((s) => ({ poseidonMuted: !s.poseidonMuted })),
 
+      toggleDarkMode: () => set((s) => ({ darkMode: !s.darkMode })),
+
       openSOS: () => {
         const reply = DEITY_REPLIES[Math.floor(Math.random() * DEITY_REPLIES.length)];
         set((s) => ({
@@ -254,6 +261,7 @@ export const useAppStore = create<AppState>()(
         posts: s.posts,
         poseidonMuted: s.poseidonMuted,
         sosLog: s.sosLog,
+        darkMode: s.darkMode,
       }),
       onRehydrateStorage: () => (_state, error) => {
         if (error) {

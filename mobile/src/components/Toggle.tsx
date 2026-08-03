@@ -6,9 +6,10 @@
  * `#c9bb96`, animação de 0.2s.
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Animated, Pressable, StyleSheet } from 'react-native';
-import { colors } from '../theme/tokens';
+import type { ThemeColors } from '../theme/tokens';
+import { useThemeColors } from '../theme/useThemeColors';
 
 interface ToggleProps {
   value: boolean;
@@ -16,6 +17,8 @@ interface ToggleProps {
 }
 
 export function Toggle({ value, onValueChange }: ToggleProps) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const anim = useRef(new Animated.Value(value ? 1 : 0)).current;
 
   useEffect(() => {
@@ -49,18 +52,20 @@ export function Toggle({ value, onValueChange }: ToggleProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  track: {
-    width: 44,
-    height: 26,
-    borderRadius: 20,
-  },
-  knob: {
-    position: 'absolute',
-    top: 2,
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: colors.cardWhite,
-  },
-});
+function createStyles(colors: ThemeColors) {
+  return StyleSheet.create({
+    track: {
+      width: 44,
+      height: 26,
+      borderRadius: 20,
+    },
+    knob: {
+      position: 'absolute',
+      top: 2,
+      width: 22,
+      height: 22,
+      borderRadius: 11,
+      backgroundColor: colors.cardWhite,
+    },
+  });
+}

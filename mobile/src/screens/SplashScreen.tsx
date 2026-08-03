@@ -6,11 +6,12 @@
  * a `splashActive`/`skipSplash` do protótipo `Itaca App.dc.html`).
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SplashMapSvg } from '../components/SplashMapSvg';
-import { colors, spacing, typography } from '../theme/tokens';
+import { spacing, typography, type ThemeColors } from '../theme/tokens';
+import { useThemeColors } from '../theme/useThemeColors';
 
 const SPLASH_DURATION_MS = 3000;
 
@@ -19,6 +20,8 @@ interface SplashScreenProps {
 }
 
 export function SplashScreen({ onFinish }: SplashScreenProps) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const fade = useRef(new Animated.Value(0)).current;
   const finishedRef = useRef(false);
   const insets = useSafeAreaInsets();
@@ -56,31 +59,33 @@ export function SplashScreen({ onFinish }: SplashScreenProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    marginTop: 28,
-    fontFamily: 'Cinzel_900Black',
-    fontSize: typography.fontSize.splash,
-    letterSpacing: 6,
-    color: colors.textPrimary,
-  },
-  subtitle: {
-    marginTop: 8,
-    fontFamily: 'Inter_400Regular',
-    fontSize: typography.fontSize.captionLarge,
-    color: colors.textSecondary,
-    letterSpacing: 1,
-  },
-  hint: {
-    marginTop: 20,
-    fontFamily: 'Inter_400Regular',
-    fontSize: typography.fontSize.caption,
-    color: colors.textTertiary,
-  },
-});
+function createStyles(colors: ThemeColors) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    title: {
+      marginTop: 28,
+      fontFamily: 'Cinzel_900Black',
+      fontSize: typography.fontSize.splash,
+      letterSpacing: 6,
+      color: colors.textPrimary,
+    },
+    subtitle: {
+      marginTop: 8,
+      fontFamily: 'Inter_400Regular',
+      fontSize: typography.fontSize.captionLarge,
+      color: colors.textSecondary,
+      letterSpacing: 1,
+    },
+    hint: {
+      marginTop: 20,
+      fontFamily: 'Inter_400Regular',
+      fontSize: typography.fontSize.caption,
+      color: colors.textTertiary,
+    },
+  });
+}

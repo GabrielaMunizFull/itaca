@@ -6,9 +6,10 @@
  * quem usa define o posicionamento via prop `style`.
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Animated, StyleProp, StyleSheet, Text, ViewStyle } from 'react-native';
-import { colors, radius, shadows, spacing, typography } from '../theme/tokens';
+import { radius, shadows, spacing, typography, type ThemeColors } from '../theme/tokens';
+import { useThemeColors } from '../theme/useThemeColors';
 
 interface ToastProps {
   visible: boolean;
@@ -17,6 +18,8 @@ interface ToastProps {
 }
 
 export function Toast({ visible, message, style }: ToastProps) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const anim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -47,18 +50,20 @@ export function Toast({ visible, message, style }: ToastProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  toast: {
-    backgroundColor: colors.textPrimary,
-    borderRadius: radius.sm,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: 13,
-    maxWidth: 220,
-    ...shadows.toast,
-  },
-  text: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: typography.fontSize.caption,
-    color: colors.background,
-  },
-});
+function createStyles(colors: ThemeColors) {
+  return StyleSheet.create({
+    toast: {
+      backgroundColor: colors.textPrimary,
+      borderRadius: radius.sm,
+      paddingVertical: spacing.sm,
+      paddingHorizontal: 13,
+      maxWidth: 220,
+      ...shadows.toast,
+    },
+    text: {
+      fontFamily: 'Inter_400Regular',
+      fontSize: typography.fontSize.caption,
+      color: colors.background,
+    },
+  });
+}

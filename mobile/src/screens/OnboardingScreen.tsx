@@ -7,11 +7,12 @@
  * do protótipo ("COMEÇAR JORNADA").
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppStore, type Archetype } from '../store/useAppStore';
-import { colors, radius, spacing, typography } from '../theme/tokens';
+import { radius, spacing, typography, type ThemeColors } from '../theme/tokens';
+import { useThemeColors } from '../theme/useThemeColors';
 
 const ARCHETYPES: Array<{ id: Archetype; name: string; initial: string }> = [
   { id: 'guerreiro', name: 'Guerreiro', initial: 'G' },
@@ -21,6 +22,8 @@ const ARCHETYPES: Array<{ id: Archetype; name: string; initial: string }> = [
 ];
 
 export function OnboardingScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const completeOnboarding = useAppStore((s) => s.completeOnboarding);
   const [archetype, setArchetype] = useState<Archetype>('guerreiro');
   const [name, setName] = useState('');
@@ -46,7 +49,7 @@ export function OnboardingScreen() {
                 styles.archetypeCard,
                 {
                   backgroundColor: selected ? colors.secondary : colors.cardBeige,
-                  borderColor: selected ? colors.secondary : 'rgba(46,36,24,.1)',
+                  borderColor: selected ? colors.secondary : colors.tabBarBorder,
                 },
               ]}
             >
@@ -94,7 +97,8 @@ export function OnboardingScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ThemeColors) {
+  return StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -175,4 +179,5 @@ const styles = StyleSheet.create({
     color: colors.cardWhite,
     letterSpacing: 1,
   },
-});
+  });
+}

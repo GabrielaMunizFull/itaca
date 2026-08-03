@@ -21,7 +21,8 @@ import { DivineScreen } from '../screens/DivineScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { PenelopeScreen } from '../screens/PenelopeScreen';
 import { SirenScreen } from '../screens/SirenScreen';
-import { colors, spacing, typography } from '../theme/tokens';
+import { spacing, typography } from '../theme/tokens';
+import { useThemeColors } from '../theme/useThemeColors';
 import type { MainTabsParamList } from './types';
 
 const Tab = createBottomTabNavigator<MainTabsParamList>();
@@ -31,6 +32,7 @@ const Tab = createBottomTabNavigator<MainTabsParamList>();
 const WIPE_NAVIGATE_DELAY_MS = 190;
 
 export function MainTabs() {
+  const colors = useThemeColors();
   const insets = useSafeAreaInsets();
   const wipeRef = useRef<TabWipeOverlayHandle>(null);
   const wipeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -80,7 +82,7 @@ export function MainTabs() {
             height: tabBarHeight,
             backgroundColor: colors.cardBeige,
             borderTopWidth: 1,
-            borderTopColor: 'rgba(46,36,24,.1)',
+            borderTopColor: colors.tabBarBorder,
             paddingBottom: 6 + insets.bottom,
           },
           tabBarLabelStyle: {

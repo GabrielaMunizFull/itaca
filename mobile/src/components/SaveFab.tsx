@@ -7,11 +7,12 @@
  * `MainTabs`, visível por cima do conteúdo das tabs.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { AnchorIcon } from './icons';
 import { Toast } from './Toast';
-import { colors, radius, spacing } from '../theme/tokens';
+import { radius, spacing, type ThemeColors } from '../theme/tokens';
+import { useThemeColors } from '../theme/useThemeColors';
 
 interface SaveFabProps {
   bottomOffset: number;
@@ -23,6 +24,8 @@ const ANCHOR_RAISED = -34;
 const ANCHOR_DROPPED = 6;
 
 export function SaveFab({ bottomOffset }: SaveFabProps) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const pulse = useRef(new Animated.Value(0)).current;
   const anchorY = useRef(new Animated.Value(ANCHOR_RAISED)).current;
   const [toastVisible, setToastVisible] = useState(false);
@@ -106,32 +109,34 @@ export function SaveFab({ bottomOffset }: SaveFabProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  wrapper: {
-    position: 'absolute',
-    right: spacing.base,
-    width: 240,
-    alignItems: 'flex-end',
-  },
-  button: {
-    width: 52,
-    height: 52,
-    borderRadius: radius.full,
-    backgroundColor: colors.secondary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'visible',
-  },
-  pulseRing: {
-    position: 'absolute',
-    width: 52,
-    height: 52,
-    borderRadius: radius.full,
-    backgroundColor: colors.primary,
-  },
-  toastPosition: {
-    position: 'absolute',
-    bottom: 60,
-    right: 0,
-  },
-});
+function createStyles(colors: ThemeColors) {
+  return StyleSheet.create({
+    wrapper: {
+      position: 'absolute',
+      right: spacing.base,
+      width: 240,
+      alignItems: 'flex-end',
+    },
+    button: {
+      width: 52,
+      height: 52,
+      borderRadius: radius.full,
+      backgroundColor: colors.secondary,
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'visible',
+    },
+    pulseRing: {
+      position: 'absolute',
+      width: 52,
+      height: 52,
+      borderRadius: radius.full,
+      backgroundColor: colors.primary,
+    },
+    toastPosition: {
+      position: 'absolute',
+      bottom: 60,
+      right: 0,
+    },
+  });
+}

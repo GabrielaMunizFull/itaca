@@ -10,7 +10,7 @@
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { Animated, Easing, StyleProp, ViewStyle, useWindowDimensions } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { colors } from '../theme/tokens';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export interface TabWipeOverlayHandle {
   play: () => Promise<void>;
@@ -32,6 +32,7 @@ const PHASE_OUT_MS = 234;
 
 export const TabWipeOverlay = forwardRef<TabWipeOverlayHandle, TabWipeOverlayProps>(
   function TabWipeOverlay({ style, onWipeComplete }, ref) {
+    const colors = useThemeColors();
     const { width } = useWindowDimensions();
     const offset = width * 1.08;
     const translateX = useRef(new Animated.Value(-offset)).current;

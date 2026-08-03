@@ -7,13 +7,14 @@
  * `addReaction`, `pinnedText`, `postsView`).
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AnchorIcon, QuestionIcon, ShieldIcon } from '../components/icons';
 import { useAppStore } from '../store/useAppStore';
 import type { Post, ReactionType } from '../store/useAppStore';
-import { colors, radius, spacing, typography } from '../theme/tokens';
+import { radius, spacing, typography, type ThemeColors } from '../theme/tokens';
+import { useThemeColors } from '../theme/useThemeColors';
 
 const PINNED_TEXT =
   '"Ainda voltando" às 06h03 pelo 9º ano consecutivo. Vou tricotar até você decidir chegar. — Penélope';
@@ -26,6 +27,8 @@ interface ReactionButtonProps {
 }
 
 function ReactionButton({ Icon, count, label, onPress }: ReactionButtonProps) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <TouchableOpacity
       style={styles.reactionButton}
@@ -47,6 +50,8 @@ interface PostCardProps {
 }
 
 function PostCard({ post, onReact }: PostCardProps) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={[styles.postCard, post.dim && styles.postCardDim]}>
       <View style={styles.postHeader}>
@@ -84,6 +89,8 @@ function PostCard({ post, onReact }: PostCardProps) {
 }
 
 export function PenelopeScreen() {
+  const colors = useThemeColors();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const posts = useAppStore((s) => s.posts);
   const sendSignal = useAppStore((s) => s.sendSignal);
   const addReaction = useAppStore((s) => s.addReaction);
@@ -135,7 +142,8 @@ export function PenelopeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ThemeColors) {
+  return StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.background,
@@ -206,7 +214,7 @@ const styles = StyleSheet.create({
   pinnedLabel: {
     fontFamily: 'Inter_700Bold',
     fontSize: typography.fontSize.caption,
-    color: '#4a5f3d',
+    color: colors.penelopeLabel,
   },
   pinnedText: {
     marginTop: spacing.xs,
@@ -279,4 +287,5 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.microLarge,
     color: colors.textTertiary,
   },
-});
+  });
+}
