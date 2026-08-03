@@ -1,5 +1,5 @@
 /**
- * Ícones SVG lineares — Ãtaca App
+ * Ícones SVG lineares — Ítaca App
  *
  * Traçados copiados 1:1 de `Itaca App.dc.html` (stroke-width 1.5–1.6, sem
  * preenchimento sólido), convertidos para `react-native-svg`.

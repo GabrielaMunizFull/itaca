@@ -1,5 +1,5 @@
 /**
- * Toggle — Ãtaca App
+ * Toggle — Ítaca App
  *
  * Réplica do toggle do protótipo (`Itaca App.dc.html`): track 44x26,
  * radius 20, knob 22px deslizando de 2px a 20px, cor on `#6E8F4B` / off

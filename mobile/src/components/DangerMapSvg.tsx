@@ -1,5 +1,5 @@
 /**
- * DangerMapSvg — Ãtaca App
+ * DangerMapSvg — Ítaca App
  *
  * Mapa de perigo da tela Sereia: mesma rota do card "ROTA ATUAL" (em
  * dourado semi-transparente) sobre fundo escuro, com zona de perigo

@@ -1,5 +1,5 @@
 /**
- * PenelopeScreen — Ãtaca App
+ * PenelopeScreen — Ítaca App
  *
  * Status para Penélope: feed social somente-leitura de "provas de vida"
  * automáticas, post fixado de Penélope e botão para enviar um sinal manual.

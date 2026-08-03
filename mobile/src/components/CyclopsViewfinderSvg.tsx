@@ -1,5 +1,5 @@
 /**
- * CyclopsViewfinderSvg — Ãtaca App
+ * CyclopsViewfinderSvg — Ítaca App
  *
  * Ilustração do olho de ciclope + moldura de foco do viewfinder na tela
  * Scanner de Ciclope. Traçados copiados 1:1 de `Itaca App.dc.html`. Durante

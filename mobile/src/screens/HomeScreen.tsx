@@ -1,5 +1,5 @@
 /**
- * HomeScreen — Ãtaca App
+ * HomeScreen — Ítaca App
  *
  * Visão geral da jornada: ETA duplo, clima, rota atual e próximos desvios.
  * Textos e valores copiados 1:1 de `Itaca App.dc.html`. Dropdown de

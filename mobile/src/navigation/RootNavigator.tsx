@@ -1,5 +1,5 @@
 /**
- * RootNavigator — Ãtaca App
+ * RootNavigator — Ítaca App
  *
  * Mostra a `SplashScreen` primeiro (controlada por estado local
  * `splashActive`, não pelo store) e também enquanto o estado persistido

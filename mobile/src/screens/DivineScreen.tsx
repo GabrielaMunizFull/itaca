@@ -1,5 +1,5 @@
 /**
- * DivineScreen — Ãtaca App
+ * DivineScreen — Ítaca App
  *
  * Central de Ajuda Divina: lista de contatos divinos com status de
  * disponibilidade, botão para silenciar/reativar Poseidon e SOS aos deuses

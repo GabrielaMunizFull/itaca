@@ -1,5 +1,5 @@
 /**
- * SaveFab — Ãtaca App
+ * SaveFab — Ítaca App
  *
  * Botão flutuante "salvar progresso" (equivalente ao FAB de
  * `Itaca App.dc.html`, `saveProgress`/`fabPulse`): pulso contínuo sutil,

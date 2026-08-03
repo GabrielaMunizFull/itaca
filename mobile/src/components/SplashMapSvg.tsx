@@ -1,5 +1,5 @@
 /**
- * SplashMapSvg — Ãtaca App
+ * SplashMapSvg — Ítaca App
  *
  * Versão simplificada do mapa animado da splash do protótipo
  * (`Itaca App.dc.html`): em vez de replicar o rasgo via `clip-path`, o

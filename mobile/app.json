@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Ãtaca",
+    "name": "Ítaca",
     "slug": "itaca-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -35,7 +35,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "O Ãtaca usa a câmera para o Scanner de Ciclope — a simulação de detecção de criaturas mitológicas ao seu redor."
+          "cameraPermission": "O Ítaca usa a câmera para o Scanner de Ciclope — a simulação de detecção de criaturas mitológicas ao seu redor."
         }
       ]
     ]

@@ -1,5 +1,5 @@
 /**
- * Utilitários de formatação compartilhados — Ãtaca App
+ * Utilitários de formatação compartilhados — Ítaca App
  */
 
 // Formata "HH:MM" (equivalente a `toLocaleTimeString('pt-BR', { hour:

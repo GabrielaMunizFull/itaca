@@ -1,7 +1,7 @@
-# Handoff: Ãtaca — App de Navegação Épica (satírico)
+# Handoff: Ítaca — App de Navegação Épica (satírico)
 
 ## Overview
-Ãtaca é um app mobile fictício de "navegação/sobrevivência" para heróis em jornadas intermináveis, inspirado na Odisseia de Homero com tom satírico. O protótipo cobre onboarding, 5 telas principais (Home, Alerta de Sereia, Scanner de Ciclope, Status para Penélope, Central de Ajuda Divina), tela de Configurações, splash screen animado e persistência local de estado.
+Ítaca é um app mobile fictício de "navegação/sobrevivência" para heróis em jornadas intermináveis, inspirado na Odisseia de Homero com tom satírico. O protótipo cobre onboarding, 5 telas principais (Home, Alerta de Sereia, Scanner de Ciclope, Status para Penélope, Central de Ajuda Divina), tela de Configurações, splash screen animado e persistência local de estado.
 
 ## About the Design Files
 Os arquivos deste pacote são **referências de design feitas em HTML** — um protótipo React (via Design Component runtime interno) que mostra visual e comportamento pretendidos, não código de produção para copiar diretamente. A tarefa é **recriar este design HTML no ambiente real do projeto** (React Native, Flutter, SwiftUI, Android nativo, etc.) usando os padrões e bibliotecas já estabelecidos no codebase-alvo — ou, se não houver ambiente ainda, escolher o framework mais adequado (recomendado: React Native ou Flutter, dado que é mobile-first com navegação por abas) e implementar lá.
@@ -17,7 +17,7 @@ Os arquivos deste pacote são **referências de design feitas em HTML** — um p
 - **Componentes**:
   - Ilustração de mapa em SVG (220×220px), traçado com `stroke-dasharray`/`stroke-dashoffset` animando de "desenhando" (1.7s ease) para completo.
   - Após ~1.7s, o mapa se divide em duas metades (`clip-path` polygon irregular tipo rasgo) que se afastam lateralmente com rotação leve (`translateX(±46px) rotate(±7deg)`), ao longo de 3s total.
-  - Título "ÃTACA": Cinzel 900, 34px, letter-spacing 6px, cor #2E2418, leve emboss (text-shadow duplo).
+  - Título "ÍTACA": Cinzel 900, 34px, letter-spacing 6px, cor #2E2418, leve emboss (text-shadow duplo).
   - Subtítulo: Inter 12px, #5B4C36, "navegação para heróis que demoram a chegar".
   - Dica: Inter 11px, #8a7a63, "toque para pular a saga" — tela inteira é clicável para pular.
   - Duração total antes de avançar automaticamente: 3000ms.
@@ -41,7 +41,7 @@ Os arquivos deste pacote são **referências de design feitas em HTML** — um p
   - "TEMPO ESTIMADO": fundo #E3D3A8, valor "3 dias" (20px 700 #17454F), legenda "segundo o oráculo".
   - "TEMPO REAL (HISTÓRICO)": fundo #F3E4C1, borda 1px rgba(191,91,51,.25), valor "9 anos, 11 meses" (20px 700 #8F4023), legenda "baseado em 1 jornada anterior (a sua)".
 - **Card de clima**: fundo #E3D3A8, ícone de sol (SVG linha), texto "Aparentemente calmo" / "Poseidon está fingindo não ver você".
-- **Card "ROTA ATUAL"**: fundo #fff8e8, radius 16px, contém mapa SVG (230px altura) com rota tracejada laranja (#BF5B33, dasharray 3 2.4) cheia de curvas/desvios, linha reta pontilhada dourada (#B9924A) mostrando a "rota original", pontos de parada, labels "Troia" / "Sereias" / "Ãtaca". Legenda de cores no canto superior direito do card.
+- **Card "ROTA ATUAL"**: fundo #fff8e8, radius 16px, contém mapa SVG (230px altura) com rota tracejada laranja (#BF5B33, dasharray 3 2.4) cheia de curvas/desvios, linha reta pontilhada dourada (#B9924A) mostrando a "rota original", pontos de parada, labels "Troia" / "Sereias" / "Ítaca". Legenda de cores no canto superior direito do card.
 - **Lista "PRÓXIMOS DESVIOS"**: 3 cards (#E3D3A8, radius 12px) — Ilha dos Lotófagos, Território dos Ciclopes, Eólia — cada um com título bold + descrição irônica em cinza.
 - **Botões**: "INICIAR NAVEGAÇÃO" (primário, #BF5B33) e "Ver histórico de desvios (14)" (outline, #17454F).
 
@@ -59,7 +59,7 @@ Os arquivos deste pacote são **referências de design feitas em HTML** — um p
 - **Viewfinder**: card escuro (#0c1f24), SVG estilizado de um ciclope simplificado, moldura de foco em cantos (verde #6E8F4B), badge "● GRAVANDO" e "{{confiança}}% confiança". Durante scan, uma barra horizontal verde "varre" verticalmente (`floatBob` 1.1s).
 - **Chips de criaturas simuladas** (scroll horizontal): Polifemo, Cila, Caríbdis, Lestrigões, Circe — selecionado = fundo #17454F.
 - **Botão "Escanear criatura"**: dispara estado `scanning` por 1.3s, depois popula card de resultado (nome, tipo, badge de ameaça, nota irônica, botão "Fingir ser 'Ninguém'", botão "Compartilhar alerta").
-- **Modal de compartilhamento**: overlay escuro + card com preview de "post social" (nome da criatura + hashtags #AindaVivo #ÃtacaApp).
+- **Modal de compartilhamento**: overlay escuro + card com preview de "post social" (nome da criatura + hashtags #AindaVivo #ÍtacaApp).
 - **Histórico de scans**: até 3 entradas recentes com nome/ameaça/horário.
 
 ### 5. Status para Penélope

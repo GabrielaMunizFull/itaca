@@ -1,5 +1,5 @@
 /**
- * OnboardingScreen — Ãtaca App
+ * OnboardingScreen — Ítaca App
  *
  * MVP cobre apenas o passo 1 do protótipo (`Itaca App.dc.html`): escolha de
  * arquétipo e nomes de herói/navio. Sem passo 2 (permissões) nem rótulo

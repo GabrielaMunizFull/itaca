@@ -5,7 +5,7 @@
 > Claude precisa perguntar ou adivinhar.
 
 ## Sobre o projeto
-- Nome: Ãtaca
+- Nome: Ítaca
 - Objetivo: app mobile satírico de "navegação/sobrevivência" para heróis em jornadas épicas intermináveis, inspirado na Odisseia de Homero. Ver `README.md` (handoff de design) e `Itaca App.dc.html` (protótipo hifi de referência) na raiz do repo.
 - Público-alvo: usuários de apps mobile que curtem humor/sátira; protótipo cobre onboarding, 5 telas principais (Home, Alerta de Sereia, Scanner de Ciclope, Status para Penélope, Central de Ajuda Divina), Configurações e splash animado.
 

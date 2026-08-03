@@ -1,5 +1,5 @@
 /**
- * SplashScreen — Ãtaca App
+ * SplashScreen — Ítaca App
  *
  * Abertura do app: mapa em SVG com fade-in/desenho, título, subtítulo e
  * dica. Avança automaticamente após 3000ms ou ao toque na tela (equivalente
@@ -51,7 +51,7 @@ export function SplashScreen({ onFinish }: SplashScreenProps) {
     >
       <Animated.View style={{ opacity: fade, alignItems: 'center' }}>
         <SplashMapSvg />
-        <Text style={styles.title}>ÃTACA</Text>
+        <Text style={styles.title}>ÍTACA</Text>
         <Text style={styles.subtitle}>navegação para heróis que demoram a chegar</Text>
         <Text style={styles.hint}>toque para pular a saga</Text>
       </Animated.View>

@@ -1,5 +1,5 @@
 /**
- * Toast — Ãtaca App
+ * Toast — Ítaca App
  *
  * Réplica do toast do protótipo (`Itaca App.dc.html`): caixa escura com
  * fade/scale de entrada. Componente controlado — não se auto-posiciona;

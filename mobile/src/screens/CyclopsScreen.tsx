@@ -1,5 +1,5 @@
 /**
- * CyclopsScreen — Ãtaca App
+ * CyclopsScreen — Ítaca App
  *
  * Scanner de Ciclope: câmera real (via `expo-camera`) como fundo ao vivo do
  * viewfinder quando a permissão é concedida (com fallback ilustrado
@@ -128,7 +128,7 @@ export function CyclopsScreen() {
 
   const handleShare = () => {
     Share.share({
-      message: `Encontrei um(a) ${creature.name}! Ameaça ${creature.threat} · #AindaVivo #ÃtacaApp`,
+      message: `Encontrei um(a) ${creature.name}! Ameaça ${creature.threat} · #AindaVivo #ÍtacaApp`,
     }).catch(() => {
       Alert.alert('Não foi possível compartilhar', 'Tente novamente em instantes.');
     });
@@ -177,7 +177,7 @@ export function CyclopsScreen() {
             {permission.canAskAgain !== false ? (
               <View style={styles.permissionOverlay}>
                 <Text style={styles.permissionOverlayText}>
-                  O Ãtaca usa a câmera para o Scanner de Ciclope — a simulação de detecção de criaturas mitológicas ao
+                  O Ítaca usa a câmera para o Scanner de Ciclope — a simulação de detecção de criaturas mitológicas ao
                   seu redor.
                 </Text>
                 <TouchableOpacity

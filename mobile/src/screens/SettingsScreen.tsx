@@ -1,5 +1,5 @@
 /**
- * SettingsScreen — Ãtaca App
+ * SettingsScreen — Ítaca App
  *
  * Editar nome do herói/navio, alternar modo noturno. "Recomeçar jornada"
  * fica fora do escopo MVP (`Itaca App.dc.html` seção 7).

@@ -1,5 +1,5 @@
 /**
- * MainTabs — Ãtaca App
+ * MainTabs — Ítaca App
  *
  * Bottom tabs das 5 telas principais: "Início", "Sereia", "Ciclope",
  * "Penélope" e "Divina". Ícones lineares em `react-native-svg`, cor

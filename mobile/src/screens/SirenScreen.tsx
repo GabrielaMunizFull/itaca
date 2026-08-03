@@ -1,5 +1,5 @@
 /**
- * SirenScreen — Ãtaca App
+ * SirenScreen — Ítaca App
  *
  * Alerta de canto de sereia: mapa de perigo, banner de aviso, toggles de
  * mitigação e contador de sereias evitadas. Textos copiados 1:1 de

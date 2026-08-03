@@ -1,5 +1,5 @@
 /**
- * TabWipeOverlay — Ãtaca App
+ * TabWipeOverlay — Ítaca App
  *
  * Transição "rasgo de papiro" entre abas (equivalente a `navWipe`/
  * `wipeTear` de `Itaca App.dc.html`): overlay absoluto, sem interação,

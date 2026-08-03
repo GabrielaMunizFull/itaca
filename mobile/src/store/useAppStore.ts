@@ -1,5 +1,5 @@
 /**
- * Estado global — Ãtaca App
+ * Estado global — Ítaca App
  *
  * Espelha o comportamento da classe `Component` do protótipo
  * `Itaca App.dc.html` (métodos `completeOnboarding`, `toggleMast`,

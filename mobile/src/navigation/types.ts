@@ -1,5 +1,5 @@
 /**
- * Tipos de navegação — Ãtaca App
+ * Tipos de navegação — Ítaca App
  */
 
 export type RootStackParamList = {

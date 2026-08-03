@@ -1,5 +1,5 @@
 /**
- * RouteMapSvg — Ãtaca App
+ * RouteMapSvg — Ítaca App
  *
  * Mapa de rota exibido no card "ROTA ATUAL" da Home. Curvas, pontos e
  * labels copiados 1:1 de `Itaca App.dc.html`.
@@ -55,7 +55,7 @@ export function RouteMapSvg() {
         Sereias
       </SvgText>
       <SvgText x={8} y={99} fontSize={3.6} fill={colors.secondary} textAnchor="start" fontWeight="700">
-        Ãtaca
+        Ítaca
       </SvgText>
     </Svg>
   );

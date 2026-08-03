@@ -1,5 +1,5 @@
 /**
- * Setup global de testes — Ãtaca App
+ * Setup global de testes — Ítaca App
  *
  * Mocks de módulos nativos que não existem no ambiente Jest (AsyncStorage,
  * safe-area-context), aplicados a toda a suíte.
