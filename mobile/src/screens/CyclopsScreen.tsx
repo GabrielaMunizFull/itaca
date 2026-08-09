@@ -18,6 +18,7 @@ import { CyclopsViewfinderSvg } from '../components/CyclopsViewfinderSvg';
 import { useAppStore } from '../store/useAppStore';
 import { radius, spacing, typography, type ThemeColors } from '../theme/tokens';
 import { useThemeColors } from '../theme/useThemeColors';
+import { scanCreatureFromPhoto } from '../utils/api';
 import { formatTime } from '../utils/format';
 
 interface Creature {
@@ -86,14 +87,24 @@ export function CyclopsScreen() {
 
   const [scanning, setScanning] = useState(false);
   const [scanDone, setScanDone] = useState(false);
+  const [aiReason, setAiReason] = useState<string | null>(null);
   const [permission, requestPermission] = useCameraPermissions();
   const scanTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cameraRef = useRef<CameraView>(null);
+  const isMountedRef = useRef(true);
 
   useEffect(
     () => () => {
       if (scanTimerRef.current) {
         clearTimeout(scanTimerRef.current);
       }
+    },
+    []
+  );
+
+  useEffect(
+    () => () => {
+      isMountedRef.current = false;
     },
     []
   );
@@ -106,11 +117,10 @@ export function CyclopsScreen() {
     }
     pickCreature(id);
     setScanDone(false);
+    setAiReason(null);
   };
 
-  const handleScan = () => {
-    setScanning(true);
-    setScanDone(false);
+  const runMockScan = () => {
     if (scanTimerRef.current) {
       clearTimeout(scanTimerRef.current);
     }
@@ -120,6 +130,50 @@ export function CyclopsScreen() {
       addScanToHistory({ name: creature.name, threat: creature.threat, time: formatTime(new Date()) });
       scanTimerRef.current = null;
     }, SCAN_DURATION_MS);
+  };
+
+  const handleScan = async () => {
+    setScanning(true);
+    setScanDone(false);
+    setAiReason(null);
+
+    const cameraActive = Boolean(permission?.granted) && isFocused;
+    const camera = cameraRef.current;
+
+    if (cameraActive && camera && typeof camera.takePictureAsync === 'function') {
+      try {
+        const photo = await camera.takePictureAsync({ base64: true, quality: 0.5, skipProcessing: true });
+        if (!isMountedRef.current) {
+          return;
+        }
+        if (!photo?.base64) {
+          throw new Error('Não foi possível capturar a foto.');
+        }
+        const result = await scanCreatureFromPhoto(photo.base64, 'image/jpeg');
+        if (!isMountedRef.current) {
+          return;
+        }
+        const detected = CREATURES.find((c) => c.id === result.creatureId) ?? creature;
+        pickCreature(detected.id);
+        setAiReason(result.reason);
+        setScanning(false);
+        setScanDone(true);
+        addScanToHistory({ name: detected.name, threat: detected.threat, time: formatTime(new Date()) });
+        return;
+      } catch (err) {
+        console.warn(err);
+        if (!isMountedRef.current) {
+          return;
+        }
+        Alert.alert('Detecção real indisponível', 'Caímos no modo simulado.');
+      }
+    }
+
+    if (!isMountedRef.current) {
+      return;
+    }
+
+    runMockScan();
   };
 
   const handlePretendToBeNobody = () => {
@@ -158,7 +212,7 @@ export function CyclopsScreen() {
           <CyclopsViewfinderSvg scanning={scanning} focused={scanning || scanDone} />
         ) : permission.granted && isFocused ? (
           <>
-            <CameraView style={styles.cameraFill} facing="back" />
+            <CameraView ref={cameraRef} style={styles.cameraFill} facing="back" />
             <View style={styles.frameOverlay} pointerEvents="none">
               <CyclopsViewfinderSvg scanning={scanning} focused={scanning || scanDone} variant="frame" />
             </View>
@@ -256,7 +310,7 @@ export function CyclopsScreen() {
               <Text style={styles.threatBadgeText}>AMEAÇA {creature.threat}</Text>
             </View>
           </View>
-          <Text style={styles.resultNote}>{creature.note}</Text>
+          <Text style={styles.resultNote}>{aiReason ?? creature.note}</Text>
           <TouchableOpacity
             style={styles.nobodyButton}
             activeOpacity={0.85}

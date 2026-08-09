@@ -11,7 +11,7 @@
 
 ## Stack técnica
 - Frontend: React Native com Expo, TypeScript, React Navigation (bottom tabs para as 5 telas principais), Zustand para estado global (substitui o `this.state` único do protótipo)
-- Backend: nenhum ainda — protótipo é local-only; toda "API" é mock hardcoded (criaturas, posts, contatos, respostas de SOS)
+- Backend: `server/` — Node + Express + TypeScript, sem banco de dados nem autenticação, único endpoint `POST /scan` usando `@anthropic-ai/sdk` (Claude, visão) para analisar a foto tirada no Scanner de Ciclope e "detectar" uma das 5 criaturas mitológicas de forma satírica. Roda só localmente por enquanto (uso de desenvolvimento). O restante da "API" continua mock hardcoded (posts, contatos, respostas de SOS)
 - Banco de dados: nenhum — persistência local via `AsyncStorage` (substitui `localStorage`/`itaca-mvp-state` do protótipo). Dados sensíveis, se algum dia existirem, devem usar `expo-secure-store`
 - Hospedagem / Deploy: EAS Build/Submit (a definir/configurar quando o projeto for criado)
 - Outras ferramentas: fontes Google Fonts `Cinzel` e `Inter` via `expo-font`/`@expo-google-fonts`
@@ -29,6 +29,17 @@ Todos os comandos abaixo rodam de dentro de `mobile/` (`cd mobile` primeiro):
 - `npx tsc --noEmit` — checagem de tipos sem gerar build
 - `npm run build` — build de produção (via EAS quando configurado)
 - `npm run test` — roda a suíte de testes
+
+Backend (`server/`, a partir da raiz do repo):
+- `cd server && npm install && npm run dev` — sobe o backend local (recarrega automaticamente)
+- `cd server && npx tsc --noEmit` — checagem de tipos sem gerar build
+
+Para o Scanner de Ciclope funcionar com detecção real, `mobile/.env` precisa
+de `EXPO_PUBLIC_API_URL` apontando pro IP local da máquina (não
+`localhost`) — necessário pra funcionar num celular físico na mesma rede
+Wi-Fi. No Windows, descubra o IP com `ipconfig` (procure "Endereço IPv4" do
+adaptador Wi-Fi ativo) e use algo como
+`EXPO_PUBLIC_API_URL=http://192.168.0.42:3000`.
 
 ## Regras e restrições
 - Nunca faça commit direto na `main`; sempre abra PR
