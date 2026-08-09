@@ -41,6 +41,13 @@ Wi-Fi. No Windows, descubra o IP com `ipconfig` (procure "Endereço IPv4" do
 adaptador Wi-Fi ativo) e use algo como
 `EXPO_PUBLIC_API_URL=http://192.168.0.42:3000`.
 
+## Gerar um APK (build local, para instalar no celular)
+1. `cd mobile && npx eas login` (cria conta grátis em expo.dev se ainda não tiver)
+2. Na primeira vez, `npx eas build --profile preview --platform android` também pergunta se quer criar/linkar um projeto EAS — aceite
+3. `npx eas build --profile preview --platform android` — gera o `.apk` na nuvem (grátis, só demora alguns minutos) e dá um link pra baixar
+4. O ícone usado no APK é `mobile/assets/icon.png` (+ variantes `android-icon-*.png` pro ícone adaptativo do Android)
+5. Se quiser o Scanner de Ciclope com detecção real funcionando no APK (não só via Expo Go), o backend em `server/` precisa estar acessível pela internet (hoje só roda local) — sem isso, o scanner cai automaticamente no modo mock
+
 ## Regras e restrições
 - Nunca faça commit direto na `main`; sempre abra PR
 - Nunca exponha chaves de API, tokens ou segredos em código ou logs
