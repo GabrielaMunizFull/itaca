@@ -6,7 +6,7 @@
 
 ## Sobre o projeto
 - Nome: Ítaca
-- Objetivo: app mobile satírico de "navegação/sobrevivência" para heróis em jornadas épicas intermináveis, inspirado na Odisseia de Homero. Ver `README.md` (handoff de design) e `Itaca App.dc.html` (protótipo hifi de referência) na raiz do repo.
+- Objetivo: app mobile satírico de "navegação/sobrevivência" para heróis em jornadas épicas intermináveis, inspirado na Odisseia de Homero. Ver `docs/design-handoff.md` (handoff de design) e `Itaca App.dc.html` (protótipo hifi de referência) na raiz do repo.
 - Público-alvo: usuários de apps mobile que curtem humor/sátira; protótipo cobre onboarding, 5 telas principais (Home, Alerta de Sereia, Scanner de Ciclope, Status para Penélope, Central de Ajuda Divina), Configurações e splash animado.
 
 ## Stack técnica
@@ -52,7 +52,7 @@ adaptador Wi-Fi ativo) e use algo como
 - Nunca faça commit direto na `main`; sempre abra PR
 - Nunca exponha chaves de API, tokens ou segredos em código ou logs
 - Nunca commitar as pastas `ios/`/`android/` geradas por `expo prebuild`, a menos que um build nativo customizado exija
-- `Itaca App.dc.html` e `README.md` são referência de design em **alta fidelidade** (cores, tipografia, espaçamento e interações já definidos) — recriar fielmente em React Native, não redesenhar do zero
+- `Itaca App.dc.html` e `docs/design-handoff.md` são referência de design em **alta fidelidade** (cores, tipografia, espaçamento e interações já definidos) — recriar fielmente em React Native, não redesenhar do zero
 
 ## Subagentes disponíveis
 Definidos em `.claude/agents/`:
